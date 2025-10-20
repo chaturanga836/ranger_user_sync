@@ -1,9 +1,13 @@
 services:
   ranger-usersync:
-    build:
-      context: ./ranger-usersync   # path to your folder with Dockerfile
-      dockerfile: Dockerfile       # optional if named 'Dockerfile'
+    image: dgbtechnologies/ranger-usersync:latest
     container_name: ranger-usersync
+    user: root     # optional if permissions cause issues
+    volumes:
+      - ./ranger-usersync/ranger-usersync-install.properties:/home/ranger/scripts/ranger-usersync-install.properties
+      - ./ranger-usersync/logs:/opt/ranger-usersync/logs
+    environment:
+      - POLICY_MGR_URL=http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080
     depends_on:
       - ranger
     networks:
