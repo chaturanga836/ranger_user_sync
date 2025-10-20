@@ -1,0 +1,10 @@
+services:
+  ranger-usersync:
+    build:
+      context: ./ranger-usersync   # path to your folder with Dockerfile
+      dockerfile: Dockerfile       # optional if named 'Dockerfile'
+    container_name: ranger-usersync
+    depends_on:
+      - ranger
+    networks:
+      - ranger_net
