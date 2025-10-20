@@ -12,3 +12,7 @@ services:
       - ranger
     networks:
       - ranger_net
+
+networks:
+  ranger_net:
+    driver: bridge
