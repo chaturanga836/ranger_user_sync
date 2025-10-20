@@ -8,9 +8,3 @@ services:
       - ./ranger-usersync/logs:/opt/ranger-usersync/logs
     environment:
       - POLICY_MGR_URL=http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080
-    networks:
-      - ranger_net
-
-networks:
-  ranger_net:
-    external: true
