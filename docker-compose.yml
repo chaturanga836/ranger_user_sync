@@ -6,6 +6,7 @@ services:
     container_name: ranger-usersync
     user: root
     volumes:
+      - ./ranger-usersync/ranger-ugsync-site.xml:/opt/ranger/usersync/usersync/conf/ranger-ugsync-site.xml
       - ./ranger-usersync/install.properties:/etc/ranger/usersync/conf/install.properties
       - ./ranger-usersync/logs:/opt/ranger-usersync/logs
     environment:
