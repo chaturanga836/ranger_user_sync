@@ -6,7 +6,7 @@ services:
     container_name: ranger-usersync
     user: root
     volumes:
-      - ./ranger-usersync/install.properties:/home/ranger/scripts/ranger-usersync-install.properties
+      - ./ranger-usersync/install.properties:/etc/ranger/usersync/conf/install.properties
       - ./ranger-usersync/logs:/opt/ranger-usersync/logs
     environment:
       - POLICY_MGR_URL=http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080
