@@ -1,14 +1,14 @@
-version: "3.9"
+version: "3.8"
 
 services:
   ranger-usersync:
-    image: dgbtechnologies/ranger-usersync:latest
+    build: .
     container_name: ranger-usersync
-    user: root
-    volumes:
-      - ./ranger-usersync/ranger-ugsync-site.xml:/opt/ranger/usersync/usersync/conf/ranger-ugsync-site.xml
-      - ./ranger-usersync/install.properties:/etc/ranger/usersync/conf/install.properties
-      - ./ranger-usersync/logs:/opt/ranger-usersync/logs
+    depends_on:
+      - ranger-admin
+      - ldap-server
     environment:
-      - POLICY_MGR_URL=http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080
+      - JAVA_HOME=/usr/local/openjdk-11
+    volumes:
+      - ./ranger-usersync/conf/ranger-ugsync-site.xml:/opt/ranger-usersync/conf/ranger-ugsync-site.xml
     restart: unless-stopped
