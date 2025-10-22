@@ -19,7 +19,7 @@ WORKDIR ${RANGER_USER_HOME}
 RUN chmod +x *.sh setup.py
 
 # Run the UserSync setup script (prepares conf/ and libraries)
-RUN ./setup.sh
+RUN JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 ./setup.sh
 
 # Expose default UserSync port
 EXPOSE 5151
