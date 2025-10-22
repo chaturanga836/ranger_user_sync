@@ -1,31 +1,28 @@
 FROM openjdk:11-jre-slim
 
 # Set environment
-ENV RANGER_HOME=/opt/ranger-usersync
-ENV JAVA_HOME=/usr/local/openjdk-11
-ENV PATH=$JAVA_HOME/bin:$PATH:$RANGER_HOME
-
-# Create directories
-RUN mkdir -p $RANGER_HOME
-WORKDIR $RANGER_HOME
-
-# Copy all UserSync files
-COPY ranger-usersync/ $RANGER_HOME/
-
-# Fix permissions and line endings (if copied from Windows)
-RUN apt-get update && apt-get install -y dos2unix bash sudo \
-    && dos2unix *.sh setup.py \
-    && chmod +x *.sh setup.py \
-    && apt-get clean
-
-# Set JAVA_HOME for setup.sh
+ENV RANGER_USERSYNC_HOME=/opt/ranger-usersync
 ENV JAVA_HOME=/usr/local/openjdk-11
 
-# Run setup during build
-RUN ./setup.sh
+# Install Python3
+RUN apt-get update && apt-get install -y python3 python3-pip sudo && rm -rf /var/lib/apt/lists/*
 
-# Expose the default UserSync port
-EXPOSE 5151
+# Create necessary directories
+RUN mkdir -p $RANGER_USERSYNC_HOME
+
+# Copy UserSync source code into container
+COPY . $RANGER_USERSYNC_HOME
+
+WORKDIR $RANGER_USERSYNC_HOME
+
+# Set executable permissions
+RUN chmod +x setup.py ranger-usersync-services.sh
+
+# Run setup.py to initialize UserSync
+RUN python3 setup.py
+
+# Expose logs or any ports if needed (usually UserSync doesn't serve ports)
+VOLUME ["/var/log/ranger/usersync", "/var/run/ranger"]
 
 # Start UserSync service
-CMD ["./start.sh"]
+CMD ["./ranger-usersync-services.sh", "start"]
