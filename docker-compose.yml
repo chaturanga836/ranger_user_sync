@@ -4,9 +4,6 @@ services:
   ranger-usersync:
     build: .
     container_name: ranger-usersync
-    depends_on:
-      - ranger-admin
-      - ldap-server
     environment:
       - JAVA_HOME=/usr/local/openjdk-11
     volumes:
