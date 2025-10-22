@@ -38,4 +38,4 @@ USER ranger
 EXPOSE 5151
 
 # Start UserSync service
-CMD ["bash", "ranger-usersync-services.sh", "start"]
+ENTRYPOINT ["bash", "/opt/ranger-usersync/ranger-usersync-services.sh", "start"]
