@@ -8,6 +8,11 @@ RUN apt-get update && \
     
 # Create ranger user
 RUN useradd -ms /bin/bash ranger
+
+
+# Create runtime directory and give ranger ownership
+RUN mkdir -p /var/run/ranger && chown -R ranger:ranger /var/run/ranger
+
 # Set JAVA_HOME dynamically based on `java` path
 RUN export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java)))) && \
     echo "JAVA_HOME=$JAVA_HOME" >> /etc/environment
@@ -25,10 +30,10 @@ WORKDIR ${RANGER_USER_HOME}
 # Make scripts executable
 RUN chmod +x *.sh setup.py
 
-# Run setup.sh with correct JAVA_HOME
-USER ranger
 RUN bash -c "source /etc/environment && ./setup.sh"
 
+# Run setup.sh with correct JAVA_HOME
+USER ranger
 # Expose port
 EXPOSE 5151
 
