@@ -24,6 +24,11 @@ WORKDIR $RANGER_USER_HOME
 # Make scripts executable
 RUN chmod +x *.sh setup.py
 
+# FIX: Set the missing property 'ranger.usersync.credstore.filename' to avoid KeyError during setup.py
+RUN xmlstarlet ed -L -s '//configuration' -t elem -n 'property' \
+    -s '//property[last()]' -t elem -n 'name' -v 'ranger.usersync.credstore.filename' \
+    -s '//property[last()]' -t elem -n 'value' -v 'jceks://file/etc/ranger/usersync/conf/rangerusersync.jceks' \
+    $RANGER_USER_HOME/conf/ranger-ugsync-site.xml
 # Run setup.sh as root during build
 # Dynamically find the correct JAVA_HOME path and export it for ./setup.sh
 # The dirname $(dirname ...) pattern finds the JDK root path from the 'java' executable symlink.
