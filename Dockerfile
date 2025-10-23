@@ -40,4 +40,7 @@ RUN export JAVA_HOME=$(dirname $(dirname $(readlink -f /usr/bin/java))) && \
 EXPOSE 5151
 
 # Entry point: create runtime directories as root, then drop privileges
-ENTRYPOINT ["/bin/bash", "-c", "mkdir -p $RANGER_RUN_DIR && chown -R ranger:ranger $RANGER_RUN_DIR && exec su -s /bin/bash ranger -c '/opt/ranger-usersync/ranger-usersync-services.sh start'"]
+ENTRYPOINT ["/bin/bash", "-c", "\
+  mkdir -p /var/run/ranger && \
+  chown -R ranger:ranger /var/run/ranger && \
+  exec su -s /bin/bash ranger -c '/opt/ranger-usersync/ranger-usersync-services.sh start'"]
