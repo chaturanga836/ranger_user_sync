@@ -24,8 +24,10 @@ COPY ranger-usersync/ $RANGER_USER_HOME
 RUN chown -R ranger:ranger $RANGER_USER_HOME
 
 # CRUCIAL FIX: Create the logs directory and ensure the 'ranger' user owns it.
-RUN mkdir -p $RANGER_USER_HOME/logs && \
-    chown -R ranger:ranger $RANGER_USER_HOME/logs
+RUN mkdir -p $RANGER_USER_HOME/logs $RANGER_USER_HOME/conf && \
+    cp -r $RANGER_USER_HOME/conf.dist/* $RANGER_USER_HOME/conf/ && \
+    touch $RANGER_USER_HOME/logs/usersync.log && \
+    chown -R ranger:ranger $RANGER_USER_HOME
 
     # FINAL FIX: Copy configuration templates from conf.dist to the active conf directory
 RUN cp -r $RANGER_USER_HOME/conf.dist/* $RANGER_USER_HOME/conf/
@@ -36,14 +38,12 @@ WORKDIR $RANGER_USER_HOME
 RUN chmod +x *.sh setup.py
 
 # FIX: Set the missing property 'ranger.usersync.credstore.filename' to avoid KeyError during setup.py
-RUN xmlstarlet ed -L -s '//configuration' -t elem -n 'property' \
-    -s '//property[last()]' -t elem -n 'name' -v 'ranger.usersync.credstore.filename' \
-    -s '//property[last()]' -t elem -n 'value' -v 'jceks://file/etc/ranger/usersync/conf/rangerusersync.jceks' \
-    $RANGER_USER_HOME/conf/ranger-ugsync-site.xml
-
-    RUN xmlstarlet ed -L -u \
-    "//property[name='ranger.usersync.policyengine.connection.url']/value" \
+RUN xmlstarlet ed -L \
+    -u "//property[name='ranger.usersync.policyengine.connection.url']/value" \
     -v "http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080" \
+    -s '//configuration' -t elem -n 'property' \
+    -s '//property[last()]' -t elem -n 'name' -v 'ranger.usersync.credstore.filename' \
+    -s '//property[last()]' -t elem -n 'value' -v 'jceks://file/opt/ranger-usersync/conf/rangerusersync.jceks' \
     $RANGER_USER_HOME/conf/ranger-ugsync-site.xml
 
 # Run setup.sh as root during build
@@ -58,7 +58,12 @@ EXPOSE 5151
 
 # Entry point: create runtime directories as root, then drop privileges
 ENTRYPOINT ["/bin/bash", "-c", "\
-  mkdir -p /var/run/ranger && \
-  chown -R ranger:ranger /var/run/ranger && \
+  mkdir -p /var/run/ranger /opt/ranger-usersync/logs && \
+  touch /opt/ranger-usersync/logs/usersync.log && \
+  chown -R ranger:ranger /var/run/ranger /opt/ranger-usersync/logs && \
+  echo 'Starting Apache Ranger Usersync Service...' && \
   su -s /bin/bash ranger -c '/opt/ranger-usersync/ranger-usersync-services.sh start' && \
+  echo 'Waiting for usersync.log to appear...' && \
+  while [ ! -f /opt/ranger-usersync/logs/usersync.log ]; do sleep 2; done && \
+  echo 'usersync.log found. Tailing logs...' && \
   su -s /bin/bash ranger -c 'tail -F /opt/ranger-usersync/logs/usersync.log'"]
