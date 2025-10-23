@@ -2,11 +2,11 @@ FROM openjdk:11-jdk-slim
 
 # Install dependencies and the 'default-jdk' package to guarantee a linkable Java installation
 RUN apt-get update && \
-    apt-get install -y \
-        python3 python3-dev python3-pip \
-        bash procps net-tools default-jdk \
-        xmlstarlet iputils-ping curl && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y \
+        python3 python3-dev python3-pip \
+        bash procps net-tools default-jdk \
+        xmlstarlet iputils-ping curl && \
+    rm -rf /var/lib/apt/lists/*
 
 
     # Fix the Python interpreter path expected by setup.py
