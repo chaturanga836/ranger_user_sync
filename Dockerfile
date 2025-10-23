@@ -1,16 +1,14 @@
 FROM openjdk:11-jdk-slim
 
-# Install dependencies
+# Install dependencies and the 'default-jdk' package to guarantee a linkable Java installation
 RUN apt-get update && \
-    apt-get install -y python3 python3-dev python3-pip bash procps net-tools && \
+    apt-get install -y python3 python3-dev python3-pip bash procps net-tools default-jdk && \
     rm -rf /var/lib/apt/lists/*
 
 # Create ranger user
 RUN useradd -ms /bin/bash ranger
 
-# Set environment variables
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-ENV PATH=$JAVA_HOME/bin:$PATH
+# Set RANGER environment variables
 ENV RANGER_USER_HOME=/opt/ranger-usersync
 ENV RANGER_RUN_DIR=/var/run/ranger
 
@@ -24,7 +22,11 @@ WORKDIR $RANGER_USER_HOME
 RUN chmod +x *.sh setup.py
 
 # Run setup.sh as root during build
-RUN ./setup.sh
+# Dynamically find the correct JAVA_HOME path and export it for ./setup.sh
+# The dirname $(dirname ...) pattern finds the JDK root path from the 'java' executable symlink.
+RUN export JAVA_HOME=$(dirname $(dirname $(readlink -f /usr/bin/java))) && \
+    export PATH="$JAVA_HOME/bin:$PATH" && \
+    ./setup.sh
 
 # Expose Usersync port
 EXPOSE 5151
