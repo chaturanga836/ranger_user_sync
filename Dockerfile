@@ -22,6 +22,10 @@ ENV RANGER_RUN_DIR=/var/run/ranger
 COPY ranger-usersync/ $RANGER_USER_HOME
 RUN chown -R ranger:ranger $RANGER_USER_HOME
 
+# CRUCIAL FIX: Create the logs directory and ensure the 'ranger' user owns it.
+RUN mkdir -p $RANGER_USER_HOME/logs && \
+    chown -R ranger:ranger $RANGER_USER_HOME/logs
+
 WORKDIR $RANGER_USER_HOME
 
 # Make scripts executable
