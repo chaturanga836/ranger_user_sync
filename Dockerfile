@@ -53,4 +53,5 @@ EXPOSE 5151
 ENTRYPOINT ["/bin/bash", "-c", "\
   mkdir -p /var/run/ranger && \
   chown -R ranger:ranger /var/run/ranger && \
-  exec su -s /bin/bash ranger -c '/opt/ranger-usersync/ranger-usersync-services.sh start'"]
+  su -s /bin/bash ranger -c '/opt/ranger-usersync/ranger-usersync-services.sh start' && \
+  su -s /bin/bash ranger -c 'tail -F /opt/ranger-usersync/logs/usersync.log'"]
