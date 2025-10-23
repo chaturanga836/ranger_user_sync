@@ -5,6 +5,9 @@ RUN apt-get update && \
     apt-get install -y python3 python3-dev python3-pip bash procps net-tools default-jdk && \
     rm -rf /var/lib/apt/lists/*
 
+    # Fix the Python interpreter path expected by setup.py
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+
 # Create ranger user
 RUN useradd -ms /bin/bash ranger
 
