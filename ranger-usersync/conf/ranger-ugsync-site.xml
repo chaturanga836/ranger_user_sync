@@ -81,4 +81,9 @@
     <value>1000</value>
   </property>
 
+<property>
+  <name>logdir</name>
+  <value>/opt/ranger-usersync/logs</value>
+</property>
+
 </configuration>
