@@ -2,11 +2,12 @@ FROM openjdk:11-jdk-slim
 
 # Install dependencies and the 'default-jdk' package to guarantee a linkable Java installation
 RUN apt-get update && \
-    apt-get install -y \
-        python3 python3-dev python3-pip \
-        bash procps net-tools default-jdk \
-        xmlstarlet && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y \
+        python3 python3-dev python3-pip \
+        bash procps net-tools default-jdk \
+        xmlstarlet iputils-ping curl && \
+    rm -rf /var/lib/apt/lists/*
+
 
     # Fix the Python interpreter path expected by setup.py
 RUN ln -sf /usr/bin/python3 /usr/bin/python
@@ -39,6 +40,12 @@ RUN xmlstarlet ed -L -s '//configuration' -t elem -n 'property' \
     -s '//property[last()]' -t elem -n 'name' -v 'ranger.usersync.credstore.filename' \
     -s '//property[last()]' -t elem -n 'value' -v 'jceks://file/etc/ranger/usersync/conf/rangerusersync.jceks' \
     $RANGER_USER_HOME/conf/ranger-ugsync-site.xml
+
+    RUN xmlstarlet ed -L -u \
+    "//property[name='ranger.usersync.policyengine.connection.url']/value" \
+    -v "http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080" \
+    $RANGER_USER_HOME/conf/ranger-ugsync-site.xml
+
 # Run setup.sh as root during build
 # Dynamically find the correct JAVA_HOME path and export it for ./setup.sh
 # The dirname $(dirname ...) pattern finds the JDK root path from the 'java' executable symlink.
