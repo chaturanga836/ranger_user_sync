@@ -24,7 +24,7 @@ WORKDIR $RANGER_USER_HOME
 RUN chmod +x *.sh setup.py
 
 # Run setup.sh as root during build
-RUN bash -c "source /etc/environment && ./setup.sh"
+RUN ./setup.sh
 
 # Expose Usersync port
 EXPOSE 5151
