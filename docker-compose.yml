@@ -4,8 +4,6 @@ services:
   ranger-usersync:
     build: .
     container_name: ranger-usersync
-    environment:
-      - JAVA_HOME=/usr/local/openjdk-11
     volumes:
       - ./ranger-usersync/conf/ranger-ugsync-site.xml:/opt/ranger-usersync/conf/ranger-ugsync-site.xml
     restart: unless-stopped
