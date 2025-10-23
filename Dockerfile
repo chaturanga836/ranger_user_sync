@@ -26,6 +26,9 @@ RUN chown -R ranger:ranger $RANGER_USER_HOME
 RUN mkdir -p $RANGER_USER_HOME/logs && \
     chown -R ranger:ranger $RANGER_USER_HOME/logs
 
+    # FINAL FIX: Copy configuration templates from conf.dist to the active conf directory
+RUN cp -r $RANGER_USER_HOME/conf.dist/* $RANGER_USER_HOME/conf/
+
 WORKDIR $RANGER_USER_HOME
 
 # Make scripts executable
