@@ -80,4 +80,13 @@
     <value>1000</value>
   </property>
 
+<property>
+  <name>ranger.usersync.sleeptimeinmillisbetweensynccycle</name>
+  <value>60000</value> <!-- 60 seconds -->
+</property>
+
+<property>
+  <name>ranger.usersync.policymanager.maxrecordsperapicall</name>
+  <value>1000</value>
+</property>
 </configuration>
