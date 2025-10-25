@@ -52,7 +52,7 @@
   <!-- Credential keystore -->
   <property>
     <name>ranger.usersync.credstore.filename</name>
-    <value>jceks://file///opt/ranger-usersync/conf/rangerusersync.jceks</value>
+    <value>jceks://file/opt/ranger-usersync/conf/rangerusersync.jceks</value>
   </property>
 
   <property>
