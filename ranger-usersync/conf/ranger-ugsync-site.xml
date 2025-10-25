@@ -59,4 +59,10 @@
     <name>ranger.usersync.credstore.password.alias</name>
     <value>rangerUsersync_password</value>
   </property>
+
+  <property>
+    <name>ranger.usersync.source.impl.class</name>
+    <value>org.apache.ranger.ldapusersync.process.LdapUserGroupBuilder</value>
+  </property>
+
 </configuration>
