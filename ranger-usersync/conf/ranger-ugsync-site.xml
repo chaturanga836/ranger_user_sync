@@ -18,11 +18,10 @@
 </property>
 
   <!-- LDAP Connection -->
-  <property>
+<property>
     <name>ranger.usersync.ldap.url</name>
-    <value>ldap://ldap-server:1389</value>
+    <value>ldap://172.31.6.95:1389</value>  
   </property>
-  <property>
     <name>ranger.usersync.ldap.binddn</name>
     <value>cn=admin,dc=example,dc=com</value>
   </property>
