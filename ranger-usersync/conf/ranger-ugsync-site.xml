@@ -30,7 +30,7 @@
   <!-- LDAP Connection -->
   <property>
     <name>ranger.usersync.ldap.url</name>
-    <value>ldap://172.31.6.95:1389</value>
+    <value>ldap://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:1389</value>
   </property>
 
   <property>
