@@ -61,8 +61,23 @@
   </property>
 
   <property>
-    <name>ranger.usersync.source.impl.class</name>
-    <value>org.apache.ranger.ldapusersync.process.LdapUserGroupBuilder</value>
-  </property>
+    <name>ranger.usersync.source.impl.class</name>
+    <value>org.apache.ranger.ldapusersync.process.LdapUserGroupBuilder</value>
+  </property>
+
+  <property>
+    <name>ranger.usersync.policymgr.maxthreads</name>
+    <value>10</value>
+  </property>
+
+  <property>
+    <name>ranger.usersync.policymgr.maxretries</name>
+    <value>3</value>
+  </property>
+
+  <property>
+    <name>ranger.usersync.policymgr.retryinterval</name>
+    <value>1000</value>
+  </property>
 
 </configuration>
