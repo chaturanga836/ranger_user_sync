@@ -26,5 +26,8 @@ RUN cp -r ${RANGER_USER_HOME}/conf.dist/* ${RANGER_USER_HOME}/conf/
 WORKDIR $RANGER_USER_HOME
 RUN chmod +x *.sh setup.py
 
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+
+RUN mkdir -p ${RANGER_USER_HOME}/conf/cert
 # Set the entry point to simply run bash so you can take over
 CMD ["/bin/bash"]
