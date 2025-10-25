@@ -12,6 +12,11 @@
     <value>http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080</value>
 </property>
 
+<property>
+  <name>ranger.usersync.policymanager.baseURL</name>
+  <value>http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080</value>
+</property>
+
   <!-- LDAP Connection -->
   <property>
     <name>ranger.usersync.ldap.url</name>
