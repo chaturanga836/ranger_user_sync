@@ -10,21 +10,24 @@
   <property>
     <name>ranger.usersync.policymgr.urls</name>
     <value>http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080</value>
-</property>
+  </property>
 
-<property>
-  <name>ranger.usersync.policymanager.baseURL</name>
-  <value>http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080</value>
-</property>
+  <property>
+    <name>ranger.usersync.policymanager.baseURL</name>
+    <value>http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080</value>
+  </property>
 
   <!-- LDAP Connection -->
-<property>
+  <property>
     <name>ranger.usersync.ldap.url</name>
-    <value>ldap://172.31.6.95:1389</value>  
+    <value>ldap://172.31.6.95:1389</value>
   </property>
+
+  <property>
     <name>ranger.usersync.ldap.binddn</name>
     <value>cn=admin,dc=example,dc=com</value>
   </property>
+
   <property>
     <name>ranger.usersync.ldap.ldapbindpassword</name>
     <value>admin123</value>
@@ -105,7 +108,7 @@
   </property>
   <property>
     <name>ranger.usersync.sleeptimeinmillisbetweensynccycle</name>
-    <value>60000</value> <!-- 60 seconds -->
+    <value>60000</value>    <!-- 60 seconds -->
   </property>
   <property>
     <name>ranger.usersync.policymanager.maxrecordsperapicall</name>
