@@ -18,7 +18,7 @@
   </property>
 
 <property>
-  <name>ranger.usersync.policymgr.user</name>
+  <name>ranger.usersync.policymgr.username</name>
   <value>rangerusersync</value>
 </property>
 
