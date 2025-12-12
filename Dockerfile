@@ -30,4 +30,8 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python
 
 RUN mkdir -p ${RANGER_USER_HOME}/conf/cert
 # Set the entry point to simply run bash so you can take over
-CMD ["/bin/bash"]
+# CMD ["/bin/bash"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
