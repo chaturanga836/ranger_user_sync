@@ -3,10 +3,11 @@ set -e
 
 RANGER_HOME=${RANGER_USER_HOME:-/opt/ranger-usersync}
 INSTALL_PROPS="$RANGER_HOME/install.properties"
+INSTALL_MARKER="/usr/bin/ranger-usersync"
 
 echo "Starting Ranger Usersync container..."
 
-# Allow interactive shell
+# Allow manual shell
 if [[ "$1" == "bash" || "$1" == "/bin/bash" ]]; then
     exec "$@"
 fi
@@ -17,14 +18,15 @@ if [ ! -f "$INSTALL_PROPS" ]; then
     exec /bin/bash
 fi
 
-# Fix permissions ONLY for non-mounted dirs
-chown -R ranger:ranger \
-    "$RANGER_HOME/logs" \
-    "$RANGER_HOME/lib" \
-    "$RANGER_HOME/installer" \
-    "$RANGER_RUN_DIR" || true
-
 cd "$RANGER_HOME"
 
-echo "Launching Ranger Usersync..."
+# Run setup ONLY if usersync is not installed
+if [ ! -f "$INSTALL_MARKER" ]; then
+    echo "Running Ranger Usersync setup..."
+    ./setup.sh
+else
+    echo "Ranger Usersync already installed. Skipping setup."
+fi
+
+echo "Starting Ranger Usersync service..."
 exec ./start.sh
