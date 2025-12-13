@@ -5,6 +5,6 @@ services:
     build: .
     container_name: ranger-usersync
     volumes:
-      # - ./ranger-usersync/conf/ranger-ugsync-site.xml:/opt/ranger-usersync/conf/ranger-ugsync-site.xml
       - ./ranger-usersync/conf:/opt/ranger-usersync/conf
       - ./ranger-usersync/install.properties:/opt/ranger-usersync/install.properties
+
