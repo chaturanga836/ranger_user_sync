@@ -3,15 +3,24 @@ set -e
 
 echo "Starting Ranger Usersync container..."
 
-# Skip chown for mounted files (optional)
-# chown -R ranger:ranger $RANGER_USER_HOME || true
-# chown -R ranger:ranger $RANGER_RUN_DIR || true
+cd /opt/ranger-usersync
 
-cd $RANGER_USER_HOME
+# Sanity check
+if [ ! -f install.properties ]; then
+  echo "ERROR: install.properties not found at /opt/ranger-usersync/install.properties"
+  exit 1
+fi
 
-# Run Usersync setup & start
-./ranger-usersync-services.sh
+# Ensure cert dir exists (setup.sh expects it)
+mkdir -p conf/cert logs
 
-# Ensure the log directory exists
-mkdir -p logs
+# Run setup (idempotent)
+echo "Running Ranger Usersync setup..."
+./setup.sh
+
+# Start Usersync
+echo "Starting Ranger Usersync..."
+./start.sh
+
+# Keep container alive
 tail -F logs/usersync.log

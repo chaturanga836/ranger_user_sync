@@ -24,7 +24,9 @@ RUN chown -R ranger:ranger ${RANGER_USER_HOME}
 # Copy default config and make scripts executable
 RUN cp -r ${RANGER_USER_HOME}/conf.dist/* ${RANGER_USER_HOME}/conf/
 WORKDIR $RANGER_USER_HOME
-RUN chmod +x *.sh setup.py
+# RUN chmod +x *.sh setup.py
+RUN find . -type f -name "*.sh" -exec chmod +x {} \;
+
 
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 
