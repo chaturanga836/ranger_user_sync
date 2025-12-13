@@ -18,14 +18,12 @@ RUN chown -R ranger:ranger ${RANGER_USER_HOME}
 
 WORKDIR ${RANGER_USER_HOME}
 
-# Make ALL scripts executable
 RUN find . -type f -name "*.sh" -exec chmod +x {} \;
-
 RUN ln -sf /usr/bin/python3 /usr/bin/python
-
 RUN mkdir -p conf/cert logs
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+USER ranger
 ENTRYPOINT ["/entrypoint.sh"]
