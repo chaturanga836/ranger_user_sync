@@ -1,32 +1,15 @@
 #!/bin/bash
 set -e
 
-RANGER_HOME=${RANGER_USER_HOME:-/opt/ranger-usersync}
-INSTALL_PROPS="$RANGER_HOME/install.properties"
-INSTALL_MARKER="/usr/bin/ranger-usersync"
-
 echo "Starting Ranger Usersync container..."
 
-# Allow manual shell
-if [[ "$1" == "bash" || "$1" == "/bin/bash" ]]; then
-    exec "$@"
-fi
+# Fix permissions (if the volume is not owned by ranger)
+chown -R ranger:ranger $RANGER_USER_HOME || true
+chown -R ranger:ranger $RANGER_RUN_DIR || true
 
-# Validate install.properties
-if [ ! -f "$INSTALL_PROPS" ]; then
-    echo "ERROR: install.properties not found at $INSTALL_PROPS"
-    exec /bin/bash
-fi
+# Run Usersync services script
+cd $RANGER_USER_HOME
+./ranger-usersync-services.sh
 
-cd "$RANGER_HOME"
-
-# Run setup ONLY if usersync is not installed
-if [ ! -f "$INSTALL_MARKER" ]; then
-    echo "Running Ranger Usersync setup..."
-    ./setup.sh
-else
-    echo "Ranger Usersync already installed. Skipping setup."
-fi
-
-echo "Starting Ranger Usersync service..."
-exec ./start.sh
+# Keep container alive by tailing logs
+tail -F $RANGER_USER_HOME/logs/usersync.log
