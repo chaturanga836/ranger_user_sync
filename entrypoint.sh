@@ -14,14 +14,10 @@ fi
 # Validate install.properties
 if [ ! -f "$INSTALL_PROPS" ]; then
     echo "ERROR: install.properties not found at $INSTALL_PROPS"
-    echo "Dropping into shell for debugging..."
     exec /bin/bash
 fi
 
-# Fix permissions
-# chown -R ranger:ranger "$RANGER_HOME"
-# chown -R ranger:ranger "$RANGER_RUN_DIR"
-
+# Fix permissions ONLY for non-mounted dirs
 chown -R ranger:ranger \
     "$RANGER_HOME/logs" \
     "$RANGER_HOME/lib" \
@@ -30,5 +26,5 @@ chown -R ranger:ranger \
 
 cd "$RANGER_HOME"
 
-echo "Starting Ranger Usersync..."
-exec ./ranger-usersync.sh start
+echo "Launching Ranger Usersync..."
+exec ./start.sh
