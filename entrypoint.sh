@@ -7,12 +7,9 @@ cd /opt/ranger-usersync
 
 # Validate install.properties
 if [ ! -f install.properties ]; then
-  echo "ERROR: install.properties not found at /opt/ranger-usersync/install.properties"
+  echo "ERROR: install.properties not found!"
   exit 1
 fi
-
-# Required directories
-mkdir -p conf logs conf/cert
 
 # Run setup (safe to re-run)
 echo "Running Ranger Usersync setup..."

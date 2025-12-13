@@ -7,4 +7,5 @@ services:
     volumes:
       - ./ranger-usersync/conf:/opt/ranger-usersync/conf
       - ./ranger-usersync/install.properties:/opt/ranger-usersync/install.properties
+      - ./ranger-usersync/logs:/opt/ranger-usersync/logs
 
