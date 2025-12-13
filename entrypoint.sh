@@ -19,8 +19,14 @@ if [ ! -f "$INSTALL_PROPS" ]; then
 fi
 
 # Fix permissions
-chown -R ranger:ranger "$RANGER_HOME"
-chown -R ranger:ranger "$RANGER_RUN_DIR"
+# chown -R ranger:ranger "$RANGER_HOME"
+# chown -R ranger:ranger "$RANGER_RUN_DIR"
+
+chown -R ranger:ranger \
+    "$RANGER_HOME/logs" \
+    "$RANGER_HOME/lib" \
+    "$RANGER_HOME/installer" \
+    "$RANGER_RUN_DIR" || true
 
 cd "$RANGER_HOME"
 
