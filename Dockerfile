@@ -5,7 +5,7 @@ ENV RANGER_RUN_DIR=/opt/ranger-usersync/run
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH
 
-# Install required tools
+# Install required packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         python3 xmlstarlet curl bash procps \
@@ -18,7 +18,7 @@ RUN useradd -ms /bin/bash ranger
 # Copy Usersync distribution
 COPY ranger-usersync/ ${RANGER_USER_HOME}/
 
-# Create runtime directories (logs, run, conf/cert) and /var/run/ranger
+# Create runtime directories and fix ownership
 RUN mkdir -p \
       ${RANGER_USER_HOME}/logs \
       ${RANGER_RUN_DIR} \
@@ -28,7 +28,7 @@ RUN mkdir -p \
 
 WORKDIR ${RANGER_USER_HOME}
 
-# Make scripts executable
+# Make internal scripts executable (sh + py)
 RUN find . -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \;
 
 # Python compatibility
@@ -41,8 +41,8 @@ RUN ./set_globals.sh
 # Drop privileges for normal runtime
 USER ranger
 
-# Copy entrypoint
+# Copy entrypoint (must be executable on host)
 COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
-RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+# No chmod here — host executable bit will be used
+ENTRYPOINT ["./entrypoint.sh"]
