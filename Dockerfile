@@ -43,5 +43,5 @@ COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
 RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
 
 # Drop privileges
-USER ranger
+USER root
 ENTRYPOINT ["./entrypoint.sh"]
