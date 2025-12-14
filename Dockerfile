@@ -2,8 +2,8 @@ FROM eclipse-temurin:8-jdk
 
 ENV RANGER_USER_HOME=/opt/ranger-usersync
 ENV RANGER_RUN_DIR=/opt/ranger-usersync/run
-ENV JAVA_HOME=JAVA_HOME=/opt/java/openjdk
-ENV PATH=$JAVA_HOME/bin:$PATH
+# ENV JAVA_HOME=JAVA_HOME=/opt/java/openjdk
+# ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Install required packages
 RUN apt-get update && \
@@ -18,30 +18,28 @@ RUN useradd -ms /bin/bash ranger
 # Copy Usersync distribution
 COPY ranger-usersync/ ${RANGER_USER_HOME}/
 
-# Create runtime directories and fix ownership
+# Create runtime directories
 RUN mkdir -p \
       ${RANGER_USER_HOME}/logs \
       ${RANGER_RUN_DIR} \
       ${RANGER_USER_HOME}/conf/cert \
-      /var/run/ranger && \
-    chown -R ranger:ranger ${RANGER_USER_HOME} ${RANGER_RUN_DIR} /var/run/ranger
+      /var/run/ranger
 
 WORKDIR ${RANGER_USER_HOME}
 
-# Make internal scripts executable (sh + py)
+# Make scripts executable
 RUN find . -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \;
 
 # Python compatibility
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 
-# Run set_globals.sh as root to create /etc, /var/log and fix permissions
+# Run setup as root
 USER root
-RUN ./set_globals.sh
+RUN ./set_globals.sh && \
+    chown -R ranger:ranger /opt/ranger-usersync /var/run/ranger
 
+# Entrypoint
 COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
-
-# Ensure executable inside container
-USER root
 RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
 
 # Drop privileges
