@@ -25,7 +25,9 @@ RUN mkdir -p \
 WORKDIR ${RANGER_USER_HOME}
 
 # Make scripts executable
-RUN find . -type f -name "*.sh" -exec chmod +x {} \;
+RUN find . -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \;
+RUN mkdir -p /var/run/ranger && chown -R ranger:ranger /var/run/ranger
+RUN mkdir -p ${RANGER_USER_HOME}/logs && chown -R ranger:ranger ${RANGER_USER_HOME}/logs
 
 # Python compatibility
 RUN ln -sf /usr/bin/python3 /usr/bin/python
