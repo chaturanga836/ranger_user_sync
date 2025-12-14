@@ -2,7 +2,7 @@ FROM eclipse-temurin:8-jdk
 
 ENV RANGER_USER_HOME=/opt/ranger-usersync
 ENV RANGER_RUN_DIR=/opt/ranger-usersync/run
-ENV JAVA_HOME=/usr/lib/jvm/java-8-temurin
+ENV JAVA_HOME=JAVA_HOME=/opt/java/openjdk
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Install required packages

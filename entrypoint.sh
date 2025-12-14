@@ -4,7 +4,7 @@ set -e
 echo "Starting Ranger Usersync container..."
 
 # Ensure JAVA_HOME
-export JAVA_HOME=/usr/lib/jvm/java-8-temurin
+export JAVA_HOME=/opt/java/openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 cd /opt/ranger-usersync
