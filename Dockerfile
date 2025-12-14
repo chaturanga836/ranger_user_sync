@@ -38,11 +38,12 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python
 USER root
 RUN ./set_globals.sh
 
-# Drop privileges for normal runtime
-USER ranger
-
-# Copy entrypoint (must be executable on host)
 COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
 
-# No chmod here — host executable bit will be used
+# Ensure executable inside container
+USER root
+RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
+
+# Drop privileges
+USER ranger
 ENTRYPOINT ["./entrypoint.sh"]
