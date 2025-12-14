@@ -3,24 +3,12 @@ set -e
 
 echo "Starting Ranger Usersync container..."
 
-# Ensure JAVA_HOME
-export JAVA_HOME=/opt/java/openjdk
-export PATH=$JAVA_HOME/bin:$PATH
-
-cd /opt/ranger-usersync
-
-if [ ! -f install.properties ]; then
-  echo "ERROR: install.properties not found!"
-  exit 1
+# Run setup as root
+if [ "$(id -u)" = "0" ]; then
+  echo "Running Ranger Usersync setup as root..."
+  ./setup.sh
+  chown -R ranger:ranger /opt/ranger-usersync /var/run/ranger
 fi
 
-echo "Running Ranger Usersync setup..."
-./setup.sh
-
 echo "Starting Ranger Usersync service..."
-./ranger-usersync-services.sh stop || true
-./ranger-usersync-services.sh start
-
-# Ensure log exists and tail it
-touch logs/usersync.log
-tail -F logs/usersync.log
+exec su -s /bin/bash ranger -c "./ranger-usersync-services.sh start && tail -f /opt/ranger-usersync/logs/usersync.log"
