@@ -1,37 +1,48 @@
 FROM eclipse-temurin:11-jre-jammy
 
-ENV RANGER_HOME=/opt/ranger
-ENV USERSYNC_HOME=/opt/ranger-usersync
-ENV RANGER_USER=ranger
+ENV RANGER_USER_HOME=/opt/ranger-usersync
+ENV RANGER_RUN_DIR=/opt/ranger-usersync/run
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV PATH=$JAVA_HOME/bin:$PATH
 
+# Install required tools
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         python3 xmlstarlet curl bash procps \
         net-tools iputils-ping && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Create ranger user & group
-RUN groupadd -r ranger && \
-    useradd -r -g ranger -d /home/ranger -s /bin/bash ranger && \
-    mkdir -p /home/ranger && \
-    chown -R ranger:ranger /home/ranger
+# Create ranger user
+RUN useradd -ms /bin/bash ranger
 
-# Copy usersync distribution
-COPY ranger-usersync /opt/ranger-usersync
+# Copy Usersync distribution
+COPY ranger-usersync/ ${RANGER_USER_HOME}/
 
-# Ownership check logs (BUILD-TIME proof)
-RUN echo "==== BUILD OWNERSHIP CHECK ====" && \
-    ls -ld /opt/ranger-usersync && \
-    ls -l /opt/ranger-usersync | head -n 20
+# Create runtime directories (logs, run, conf/cert) and /var/run/ranger
+RUN mkdir -p \
+      ${RANGER_USER_HOME}/logs \
+      ${RANGER_RUN_DIR} \
+      ${RANGER_USER_HOME}/conf/cert \
+      /var/run/ranger && \
+    chown -R ranger:ranger ${RANGER_USER_HOME} ${RANGER_RUN_DIR} /var/run/ranger
 
-# Ensure executable bits (safe)
-RUN chmod +x /opt/ranger-usersync/*.sh
+WORKDIR ${RANGER_USER_HOME}
 
-# Final ownership fix
-RUN chown -R ranger:ranger /opt/ranger-usersync
+# Make scripts executable
+RUN find . -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \;
 
-# DO NOT RUN ANY SCRIPT
+# Python compatibility
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+
+# Run set_globals.sh as root to create /etc, /var/log and fix permissions
+USER root
+RUN ./set_globals.sh
+
+# Drop privileges for normal runtime
 USER ranger
-WORKDIR /opt/ranger-usersync
 
-CMD ["sleep", "infinity"]
+# Copy entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
