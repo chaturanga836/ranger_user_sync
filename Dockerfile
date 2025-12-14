@@ -42,7 +42,7 @@ RUN ./set_globals.sh
 USER ranger
 
 # Copy entrypoint
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
+RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
