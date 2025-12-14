@@ -11,4 +11,4 @@ if [ "$(id -u)" = "0" ]; then
 fi
 
 echo "Starting Ranger Usersync service..."
-exec su -s /bin/bash ranger -c "./ranger-usersync-services.sh start && tail -f /opt/ranger-usersync/logs/usersync.log"
+exec su -s /bin/bash ranger -c "./ranger-usersync-services.sh start && tail -f /dev/null"
