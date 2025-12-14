@@ -15,19 +15,18 @@ RUN useradd -ms /bin/bash ranger
 # Copy Usersync distribution
 COPY ranger-usersync/ ${RANGER_USER_HOME}/
 
-# Create runtime dirs and fix ownership
+# Create runtime dirs and fix ownership (still root here)
 RUN mkdir -p \
       ${RANGER_USER_HOME}/logs \
       ${RANGER_RUN_DIR} \
-      ${RANGER_USER_HOME}/conf/cert && \
-    chown -R ranger:ranger ${RANGER_USER_HOME}
+      ${RANGER_USER_HOME}/conf/cert \
+      /var/run/ranger && \
+    chown -R ranger:ranger ${RANGER_USER_HOME} ${RANGER_RUN_DIR} /var/run/ranger
 
 WORKDIR ${RANGER_USER_HOME}
 
-# Make scripts executable
+# Make scripts executable (include .py too)
 RUN find . -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \;
-RUN mkdir -p /var/run/ranger && chown -R ranger:ranger /var/run/ranger
-RUN mkdir -p ${RANGER_USER_HOME}/logs && chown -R ranger:ranger ${RANGER_USER_HOME}/logs
 
 # Python compatibility
 RUN ln -sf /usr/bin/python3 /usr/bin/python
@@ -35,5 +34,6 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# Drop privileges only after ownership is fixed
 USER ranger
 ENTRYPOINT ["/entrypoint.sh"]
