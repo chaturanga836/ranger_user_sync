@@ -1,7 +1,8 @@
 FROM eclipse-temurin:11-jre-jammy
 
-ENV RANGER_USER_HOME=/opt/ranger-usersync
-ENV RANGER_RUN_DIR=/opt/ranger-usersync/run
+ENV RANGER_HOME=/opt/ranger
+ENV USERSYNC_HOME=/opt/ranger-usersync
+ENV RANGER_USER=ranger
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -9,31 +10,28 @@ RUN apt-get update && \
         net-tools iputils-ping && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Create ranger user
-RUN useradd -ms /bin/bash ranger
+# Create ranger user & group
+RUN groupadd -r ranger && \
+    useradd -r -g ranger -d /home/ranger -s /bin/bash ranger && \
+    mkdir -p /home/ranger && \
+    chown -R ranger:ranger /home/ranger
 
-# Copy Usersync distribution
-COPY ranger-usersync/ ${RANGER_USER_HOME}/
+# Copy usersync distribution
+COPY ranger-usersync /opt/ranger-usersync
 
-# Create runtime dirs and fix ownership (still root here)
-RUN mkdir -p \
-      ${RANGER_USER_HOME}/logs \
-      ${RANGER_RUN_DIR} \
-      ${RANGER_USER_HOME}/conf/cert \
-      /var/run/ranger && \
-    chown -R ranger:ranger ${RANGER_USER_HOME} ${RANGER_RUN_DIR} /var/run/ranger
+# Ownership check logs (BUILD-TIME proof)
+RUN echo "==== BUILD OWNERSHIP CHECK ====" && \
+    ls -ld /opt/ranger-usersync && \
+    ls -l /opt/ranger-usersync | head -n 20
 
-WORKDIR ${RANGER_USER_HOME}
+# Ensure executable bits (safe)
+RUN chmod +x /opt/ranger-usersync/*.sh
 
-# Make scripts executable (include .py too)
-RUN find . -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \;
+# Final ownership fix
+RUN chown -R ranger:ranger /opt/ranger-usersync
 
-# Python compatibility
-RUN ln -sf /usr/bin/python3 /usr/bin/python
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-# Drop privileges only after ownership is fixed
+# DO NOT RUN ANY SCRIPT
 USER ranger
-ENTRYPOINT ["/entrypoint.sh"]
+WORKDIR /opt/ranger-usersync
+
+CMD ["sleep", "infinity"]
