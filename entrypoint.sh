@@ -20,5 +20,5 @@ echo "Starting Ranger Usersync service..."
 exec su -s /bin/bash ranger -c "
   cd $USER_SYNC_HOME && \
   ./ranger-usersync-services.sh start && \
-  tail -F /opt/ranger-usersync/logs/usersync.log
+  tail -F /opt/ranger-usersync/logs/*.log
 "
