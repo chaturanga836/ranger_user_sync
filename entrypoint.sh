@@ -13,4 +13,8 @@ if [ "$(id -u)" = "0" ] && [ ! -f "$SETUP_MARKER" ]; then
 fi
 
 echo "Starting Ranger Usersync service..."
-exec su -s /bin/bash ranger -c "./ranger-usersync-services.sh start"
+
+exec su -s /bin/bash ranger -c "
+  ./ranger-usersync-services.sh start && \
+  tail -F /opt/ranger-usersync/logs/usersync.log
+"
