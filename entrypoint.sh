@@ -3,14 +3,13 @@ set -e
 
 echo "Starting Ranger Usersync container..."
 
-USER_SYNC_HOME="/opt/ranger-usersync/usersync"
+USER_SYNC_HOME="/opt/ranger-usersync"
 SETUP_MARKER="${USER_SYNC_HOME}/.setup_done"
 
-cd /opt/ranger-usersync
+cd "$USER_SYNC_HOME"
 
 if [ "$(id -u)" = "0" ] && [ ! -f "$SETUP_MARKER" ]; then
   echo "Running Ranger Usersync setup (one-time)..."
-  cd "$USER_SYNC_HOME"
   ./setup.sh
   chown -R ranger:ranger /opt/ranger-usersync /var/run/ranger
   touch "$SETUP_MARKER"
