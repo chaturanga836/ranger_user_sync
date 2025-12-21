@@ -28,21 +28,20 @@ RUN apt-get update && \
 RUN useradd -ms /bin/bash ranger
 
 # ---------------------------------------------------
-# Copy Ranger Usersync distribution
+# Copy Ranger Usersync
 # ---------------------------------------------------
 COPY ranger-usersync/ ${RANGER_USER_HOME}/
 
 # ---------------------------------------------------
-# Create required directories
+# Required directories (DOCKER SAFE)
 # ---------------------------------------------------
 RUN mkdir -p \
     ${RANGER_USER_HOME}/logs \
     ${RANGER_RUN_DIR} \
-    ${RANGER_USER_HOME}/conf/cert \
-    /var/run/ranger
+    ${RANGER_USER_HOME}/conf/cert
 
 # ---------------------------------------------------
-# FIX: ensure correct usersync config filename
+# Fix config filename
 # ---------------------------------------------------
 RUN if [ -f "${RANGER_USER_HOME}/conf/ranger-ugsync-site.xml" ]; then \
         mv ${RANGER_USER_HOME}/conf/ranger-ugsync-site.xml \
@@ -50,12 +49,20 @@ RUN if [ -f "${RANGER_USER_HOME}/conf/ranger-ugsync-site.xml" ]; then \
     fi
 
 # ---------------------------------------------------
-# Permissions
+# Patch Ranger scripts for Docker
 # ---------------------------------------------------
-RUN chown -R ranger:ranger /opt/ranger-usersync /var/run/ranger
+RUN sed -i \
+    -e 's|/var/run/ranger|/opt/ranger-usersync/run|g' \
+    -e '/chown ${UNIX_USERSYNC_USER}/d' \
+    ${RANGER_USER_HOME}/ranger-usersync-services.sh
 
 # ---------------------------------------------------
-# Executable scripts
+# Permissions
+# ---------------------------------------------------
+RUN chown -R ranger:ranger ${RANGER_USER_HOME}
+
+# ---------------------------------------------------
+# Executables
 # ---------------------------------------------------
 RUN find ${RANGER_USER_HOME} -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \;
 
@@ -65,14 +72,11 @@ RUN find ${RANGER_USER_HOME} -type f \( -name "*.sh" -o -name "*.py" \) -exec ch
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 
 # ---------------------------------------------------
-# Entry point
+# Entrypoint (NO su, NO start.sh)
 # ---------------------------------------------------
 COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
 RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
 
-# ---------------------------------------------------
-# Runtime user
-# ---------------------------------------------------
 USER ranger
 WORKDIR ${RANGER_USER_HOME}
 
