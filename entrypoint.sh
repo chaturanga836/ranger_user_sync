@@ -1,24 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
-echo "Starting Ranger Usersync container..."
+export JAVA_HOME=/opt/java/openjdk
+export PATH=$JAVA_HOME/bin:$PATH
 
-USER_SYNC_HOME="/opt/ranger-usersync"
-SETUP_MARKER="${USER_SYNC_HOME}/.setup_done"
+echo "Starting Ranger Usersync..."
 
-cd "$USER_SYNC_HOME"
+# Cleanup stale pid
+rm -f /opt/ranger-usersync/run/usersync.pid || true
 
-if [ "$(id -u)" = "0" ] && [ ! -f "$SETUP_MARKER" ]; then
-  echo "Running Ranger Usersync setup (one-time)..."
-  ./setup.sh
-  chown -R ranger:ranger /opt/ranger-usersync /var/run/ranger
-  touch "$SETUP_MARKER"
-fi
+# Start Usersync
+./ranger-usersync-services.sh start
 
-echo "Starting Ranger Usersync service..."
-
-exec su -s /bin/bash ranger -c "
-  cd $USER_SYNC_HOME && \
-  ./ranger-usersync-services.sh start && \
-  tail -F /opt/ranger-usersync/logs/*.log
-"
+# Follow logs
+exec tail -F /opt/ranger-usersync/logs/*.log
