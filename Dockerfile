@@ -33,20 +33,17 @@ RUN useradd -ms /bin/bash ranger
 COPY ranger-usersync/ ${RANGER_USER_HOME}/
 
 # ---------------------------------------------------
+# Copy the template with correct filename
+# ---------------------------------------------------
+COPY templates/ranger-ugsync-template.xml ${RANGER_USER_HOME}/conf/ranger-ugsync-site.xml
+
+# ---------------------------------------------------
 # Required directories (DOCKER SAFE)
 # ---------------------------------------------------
 RUN mkdir -p \
     ${RANGER_USER_HOME}/logs \
     ${RANGER_RUN_DIR} \
     ${RANGER_USER_HOME}/conf/cert
-
-# ---------------------------------------------------
-# Fix config filename
-# ---------------------------------------------------
-RUN if [ -f "${RANGER_USER_HOME}/conf/ranger-ugsync-site.xml" ]; then \
-        mv ${RANGER_USER_HOME}/conf/ranger-ugsync-site.xml \
-           ${RANGER_USER_HOME}/conf/ranger-usersync-site.xml ; \
-    fi
 
 # ---------------------------------------------------
 # Patch Ranger scripts for Docker
@@ -59,7 +56,8 @@ RUN sed -i \
 # ---------------------------------------------------
 # Permissions
 # ---------------------------------------------------
-RUN chown -R ranger:ranger ${RANGER_USER_HOME}
+RUN chown -R ranger:ranger ${RANGER_USER_HOME} && \
+    chmod 600 ${RANGER_USER_HOME}/conf/ranger-ugsync-site.xml
 
 # ---------------------------------------------------
 # Executables
@@ -74,10 +72,4 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python
 # ---------------------------------------------------
 # Entrypoint (NO su, NO start.sh)
 # ---------------------------------------------------
-COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
-RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
-
-USER ranger
-WORKDIR ${RANGER_USER_HOME}
-
-ENTRYPOINT ["./entrypoint.sh"]
+COPY entrypoint.sh ${RANGER_USER_HOME}/en
