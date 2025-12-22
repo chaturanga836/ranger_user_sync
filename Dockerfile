@@ -7,6 +7,10 @@ ENV RANGER_USER_HOME=/opt/ranger-usersync
 ENV RANGER_RUN_DIR=/opt/ranger-usersync/run
 ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH=$JAVA_HOME/bin:$PATH
+ENV HADOOP_VERSION=3.3.6
+ENV HADOOP_HOME=/opt/hadoop
+ENV PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
+ENV CLASSPATH=$CLASSPATH:$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/common/lib/*
 
 # ---------------------------------------------------
 # OS packages
@@ -19,8 +23,17 @@ RUN apt-get update && \
         bash \
         procps \
         net-tools \
-        iputils-ping && \
+        iputils-ping \
+        wget && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# ---------------------------------------------------
+# Install Hadoop libraries
+# ---------------------------------------------------
+RUN mkdir -p $HADOOP_HOME && \
+    wget -qO- https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz \
+    | tar -xz -C /opt && \
+    mv /opt/hadoop-${HADOOP_VERSION} $HADOOP_HOME
 
 # ---------------------------------------------------
 # Create ranger user
@@ -52,7 +65,7 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python
 # ---------------------------------------------------
 # Set permissions
 # ---------------------------------------------------
-RUN chown -R ranger:ranger ${RANGER_USER_HOME}
+RUN chown -R ranger:ranger ${RANGER_USER_HOME} $HADOOP_HOME
 
 # ---------------------------------------------------
 # Copy and set entrypoint
@@ -60,7 +73,9 @@ RUN chown -R ranger:ranger ${RANGER_USER_HOME}
 COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
 RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
 
-USER ranger
+# ---------------------------------------------------
+# Use root to generate JCEKS; drop to ranger for runtime
+# ---------------------------------------------------
+USER root
 WORKDIR ${RANGER_USER_HOME}
-
 ENTRYPOINT ["./entrypoint.sh"]
