@@ -12,6 +12,7 @@
     <value>http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080</value>
   </property>
 
+<!-- need these config for ldap sync -->
   <property>
     <name>ranger.usersync.policymgr.username</name>
     <value>rangerusersync</value>
@@ -27,6 +28,17 @@
 		<value>6080</value>
 	</property>
 
+<property>
+  <name>ranger.usersync.sync.source</name>
+  <value>ldap</value>
+</property>
+
+<property>
+  <name>ranger.usersync.sink.impl.class</name>
+  <value>org.apache.ranger.unixusersync.process.PolicyMgrUserGroupBuilder</value>
+</property>
+
+<!-- end need these config for ldap sync -->
   <!-- LDAP Connection -->
   <property>
     <name>ranger.usersync.ldap.url</name>
