@@ -22,6 +22,11 @@
     <value>Usersync@123</value>
   </property>
 
+	<property>
+		<name>ranger.usersync.port</name>
+		<value>6080</value>
+	</property>
+
   <!-- LDAP Connection -->
   <property>
     <name>ranger.usersync.ldap.url</name>
