@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 
 export JAVA_HOME=/opt/java/openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
-echo "Starting Ranger Usersync..."
+cd /opt/ranger-usersync
 
-echo "[DEBUG] Java version:"
-java -version
+# Run setup ONCE
+if [ ! -f conf/rangerusersync.jceks ]; then
+  echo "[I] JCEKS file not found, running setup.sh"
+  ./setup.sh
+fi
 
-# Hadoop CLI NOT required for usersync
-echo "[DEBUG] Hadoop CLI not required for Ranger Usersync"
+echo "[I] Starting Ranger Usersync..."
 
-echo "[DEBUG] CLASSPATH:"
-echo "$CLASSPATH"
-
-rm -f /opt/ranger-usersync/run/usersync.pid || true
-
+rm -f run/usersync.pid || true
 ./ranger-usersync-services.sh start
 
-exec tail -F /opt/ranger-usersync/logs/*.log
+exec tail -F logs/*.log

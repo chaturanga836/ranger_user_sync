@@ -144,7 +144,7 @@
   </property>
 
   <property>
-    <name>ranger.usersync.unixauth.enabled</name>
+    <name>ranger.usersync.unix.auth.enabled</name>
     <value>false</value>
   </property>
 
