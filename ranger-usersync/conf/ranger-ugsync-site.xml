@@ -135,12 +135,17 @@
 
   <property>
     <name>ranger.usersync.sleeptimeinmillisbetweensynccycle</name>
-    <value>300000</value> <!-- 5 minutes -->
+    <value>300000</value>    <!-- 5 minutes -->
   </property>
 
   <property>
     <name>ranger.usersync.policymanager.maxrecordsperapicall</name>
     <value>1000</value>
+  </property>
+
+  <property>
+    <name>ranger.usersync.unixauth.enabled</name>
+    <value>false</value>
   </property>
 
 </configuration>
