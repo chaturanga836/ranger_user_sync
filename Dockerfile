@@ -8,9 +8,9 @@ ENV RANGER_RUN_DIR=/opt/ranger-usersync/run
 ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH=$JAVA_HOME/bin:$PATH
 ENV HADOOP_VERSION=3.3.6
-ENV HADOOP_HOME=/opt/hadoop
+ENV HADOOP_HOME=/opt/hadoop/hadoop-3.3.6
 ENV PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
-ENV CLASSPATH=$CLASSPATH:$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/common/lib/*
+ENV CLASSPATH=$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/common/lib/*
 
 # ---------------------------------------------------
 # OS packages
