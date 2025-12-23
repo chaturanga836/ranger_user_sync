@@ -74,12 +74,12 @@
   <!-- Group configuration -->
   <property>
     <name>ranger.usersync.group.objectclass</name>
-    <value>ipausergroup</value>
+    <value>posixGroup</value>
   </property>
 
   <property>
     <name>ranger.usersync.group.searchfilter</name>
-    <value>(objectClass=ipausergroup)</value>
+    <value>(objectClass=posixGroup)</value>
   </property>
   <property>
     <name>ranger.usersync.group.memberattributename</name>
