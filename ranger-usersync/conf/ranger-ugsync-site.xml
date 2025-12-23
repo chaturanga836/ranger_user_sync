@@ -47,7 +47,7 @@
 
   <property>
     <name>ranger.usersync.ldap.binddn</name>
-    <value>uid=admin,cn=users,cn=accounts,dc=ap-south-1,dc=compute,dc=amazonaws,dc=com</value>
+    <value>uid=admin,cn=users,cn=compat,dc=ap-south-1,dc=compute,dc=amazonaws,dc=com</value>
   </property>
 
   <property>
@@ -149,7 +149,7 @@
   </property>
   <property>
     <name>ranger.usersync.ldap.user.searchfilter</name>
-    <value>(objectClass=posixAccount)</value>
+    <value>(uid=*)</value>
   </property>
   <property>
     <name>ranger.usersync.ldap.user.searchattributes</name>
