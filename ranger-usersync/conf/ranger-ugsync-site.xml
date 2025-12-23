@@ -12,7 +12,7 @@
     <value>http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080</value>
   </property>
 
-<!-- need these config for ldap sync -->
+  <!-- need these config for ldap sync -->
   <property>
     <name>ranger.usersync.policymgr.username</name>
     <value>rangerusersync</value>
@@ -23,22 +23,22 @@
     <value>Usersync@123</value>
   </property>
 
-	<property>
-		<name>ranger.usersync.port</name>
-		<value>6080</value>
-	</property>
+  <property>
+    <name>ranger.usersync.port</name>
+    <value>6080</value>
+  </property>
 
-<property>
-  <name>ranger.usersync.sync.source</name>
-  <value>ldap</value>
-</property>
+  <property>
+    <name>ranger.usersync.sync.source</name>
+    <value>ldap</value>
+  </property>
 
-<property>
-  <name>ranger.usersync.sink.impl.class</name>
-  <value>org.apache.ranger.unixusersync.process.PolicyMgrUserGroupBuilder</value>
-</property>
+  <property>
+    <name>ranger.usersync.sink.impl.class</name>
+    <value>org.apache.ranger.unixusersync.process.PolicyMgrUserGroupBuilder</value>
+  </property>
 
-<!-- end need these config for ldap sync -->
+  <!-- end need these config for ldap sync -->
   <!-- LDAP Connection -->
   <property>
     <name>ranger.usersync.ldap.url</name>
@@ -77,6 +77,10 @@
     <value>ipausergroup</value>
   </property>
 
+  <property>
+    <name>ranger.usersync.group.searchfilter</name>
+    <value>(objectClass=ipausergroup)</value>
+  </property>
   <property>
     <name>ranger.usersync.group.memberattributename</name>
     <value>member</value>
@@ -135,15 +139,18 @@
     <value>org.apache.ranger.ldapusersync.process.LdapUserGroupBuilder</value>
   </property>
 
-<property>
-  <name>ranger.usersync.ldap.user.nameattribute</name>
-  <value>uid</value>
-</property>
-
-<property>
-  <name>ranger.usersync.ldap.user.searchfilter</name>
-  <value>(uid=*)</value>
-</property>
+  <property>
+    <name>ranger.usersync.ldap.user.nameattribute</name>
+    <value>uid</value>
+  </property>
+  <property>
+    <name>ranger.usersync.ldap.user.objectclass</name>
+    <value>posixAccount</value>
+  </property>
+  <property>
+    <name>ranger.usersync.ldap.user.searchfilter</name>
+    <value>(objectClass=posixAccount)</value>
+  </property>
 
   <property>
     <name>ranger.usersync.policymgr.maxthreads</name>
