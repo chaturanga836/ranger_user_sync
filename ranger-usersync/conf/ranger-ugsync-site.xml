@@ -135,6 +135,16 @@
     <value>org.apache.ranger.ldapusersync.process.LdapUserGroupBuilder</value>
   </property>
 
+<property>
+  <name>ranger.usersync.ldap.user.nameattribute</name>
+  <value>uid</value>
+</property>
+
+<property>
+  <name>ranger.usersync.ldap.user.searchfilter</name>
+  <value>(uid=*)</value>
+</property>
+
   <property>
     <name>ranger.usersync.policymgr.maxthreads</name>
     <value>10</value>

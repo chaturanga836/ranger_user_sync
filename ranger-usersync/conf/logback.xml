@@ -31,6 +31,12 @@
       <cleanHistoryOnStart>true</cleanHistoryOnStart>
     </rollingPolicy>
   </appender>
+
+  <logger name="org.apache.ranger.ldapusersync" level="DEBUG"/>
+  <logger name="org.apache.ranger.unixusersync" level="DEBUG"/>
+  <logger name="org.apache.ranger.usergroupsync" level="DEBUG"/>
+  <logger name="org.apache.ranger.plugin.util.RangerRESTClient" level="DEBUG"/>
+
   <root level="info">
     <appender-ref ref="logFile"/>
   </root>
