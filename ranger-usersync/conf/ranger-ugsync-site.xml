@@ -88,7 +88,7 @@
   </property>
   <property>
     <name>ranger.usersync.group.memberattributename</name>
-    <value>member</value>
+    <value>memberUid</value>
   </property>
 
   <property>
