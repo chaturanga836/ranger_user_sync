@@ -151,7 +151,10 @@
     <name>ranger.usersync.ldap.user.searchfilter</name>
     <value>(objectClass=posixAccount)</value>
   </property>
-
+  <property>
+    <name>ranger.usersync.ldap.user.searchattributes</name>
+    <value>uid,cn,memberof</value>
+  </property>
   <property>
     <name>ranger.usersync.policymgr.maxthreads</name>
     <value>10</value>
