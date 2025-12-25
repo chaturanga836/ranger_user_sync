@@ -63,32 +63,32 @@
 
   <property>
     <name>ranger.usersync.ldap.user.searchbase</name>
-    <value>cn=users,cn=compat,dc=ap-south-1,dc=compute,dc=amazonaws,dc=com</value>
+    <value>cn=users,cn=accounts,dc=ap-south-1,dc=compute,dc=amazonaws,dc=com</value>
   </property>
 
   <property>
     <name>ranger.usersync.group.searchbase</name>
-    <value>cn=groups,cn=compat,dc=ap-south-1,dc=compute,dc=amazonaws,dc=com</value>
+    <value>cn=groups,cn=accounts,dc=ap-south-1,dc=compute,dc=amazonaws,dc=com</value>
   </property>
 
 	<property>
 		<name>ranger.usersync.ldap.user.groupnameattribute</name>
-		<value>memberUid</value>
+		<value>member</value>
 	</property>
 
   <!-- Group configuration -->
   <property>
     <name>ranger.usersync.group.objectclass</name>
-    <value>posixGroup</value>
+    <value>ipausergroup</value>
   </property>
 
   <property>
     <name>ranger.usersync.group.searchfilter</name>
-    <value>(objectClass=posixGroup)</value>
+    <value>(objectClass=ipausergroup)</value>
   </property>
   <property>
     <name>ranger.usersync.group.memberattributename</name>
-    <value>memberUid</value>
+    <value>member</value>
   </property>
 
   <property>
@@ -150,7 +150,7 @@
   </property>
   <property>
     <name>ranger.usersync.ldap.user.objectclass</name>
-    <value>posixAccount</value>
+    <value>ipauser</value>
   </property>
   <property>
     <name>ranger.usersync.ldap.user.searchfilter</name>
