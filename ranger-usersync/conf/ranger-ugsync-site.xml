@@ -2,10 +2,10 @@
 <configuration>
 
   <!-- Ranger Admin -->
-  <property>
+  <!-- <property>
     <name>ranger.usersync.policymgr.urls</name>
     <value>http://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:6080</value>
-  </property>
+  </property> -->
 
   <property>
     <name>ranger.usersync.policymanager.baseURL</name>
