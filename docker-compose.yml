@@ -4,7 +4,15 @@ services:
   ranger-usersync:
     build: .
     container_name: ranger-usersync
+    networks:
+      - apache-solr_default
+      - ldap_service_ldap_network
     # volumes:
     #   - ./ranger-usersync/conf:/opt/ranger-usersync/conf
     #   - ./ranger-usersync/install.properties:/opt/ranger-usersync/install.properties
+networks:
+  apache-solr_default:
+    external: true
 
+  ldap_service_ldap_network:
+    external: true
