@@ -76,6 +76,10 @@
 		<value></value>
 	</property>
 
+	<property>
+		<name>ranger.usersync.enabled</name>
+		<value>true</value>
+	</property>
   <!-- Group configuration -->
   <property>
     <name>ranger.usersync.group.objectclass</name>
