@@ -68,7 +68,7 @@
 
   <property>
     <name>ranger.usersync.group.searchbase</name>
-    <value>dc=example,dc=com</value>
+    <value>ou=Groups,dc=example,dc=com</value>
   </property>
 
 	<property>
@@ -79,12 +79,12 @@
   <!-- Group configuration -->
   <property>
     <name>ranger.usersync.group.objectclass</name>
-    <value></value>
+    <value>groupOfNames</value>
   </property>
 
   <property>
     <name>ranger.usersync.group.searchfilter</name>
-    <value></value>
+    <value>(objectClass=groupOfNames)</value>
   </property>
   <property>
     <name>ranger.usersync.group.memberattributename</name>
@@ -150,7 +150,7 @@
   </property>
   <property>
     <name>ranger.usersync.ldap.user.objectclass</name>
-    <value>ipauser</value>
+    <value>inetOrgPerson</value>
   </property>
   <property>
     <name>ranger.usersync.ldap.user.searchfilter</name>
