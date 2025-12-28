@@ -199,4 +199,13 @@
     <value>false</value>
   </property>
 
+	<property>
+		<name>ranger.usersync.ldap.username.caseconversion</name>
+		<value>lower</value>
+	</property>
+
+  	<property>
+		<name>ranger.usersync.ldap.groupname.caseconversion</name>
+		<value>lower</value>
+	</property>
 </configuration>
