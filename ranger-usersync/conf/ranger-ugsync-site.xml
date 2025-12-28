@@ -63,8 +63,7 @@
 
   <property>
     <name>ranger.usersync.ldap.user.searchbase</name>
-    <value>ou=IT,dc=example,dc=com,
-    ou=Marketing,dc=example,dc=com</value>
+    <value>dc=example,dc=com</value>
   </property>
 
   <property>
