@@ -48,9 +48,11 @@ COPY ranger-usersync/ ${RANGER_USER_HOME}/
 # ---------------------------------------------------
 # Required directories
 # ---------------------------------------------------
-RUN mkdir -p ${RANGER_RUN_DIR} \
-             ${RANGER_USER_HOME}/logs \
-             ${RANGER_USER_HOME}/conf/cert
+RUN mkdir -p \
+    ${RANGER_RUN_DIR} \
+    ${RANGER_USER_HOME}/logs \
+    ${RANGER_USER_HOME}/conf/cert \
+    /var/run/ranger
 
 # ---------------------------------------------------
 # Make all scripts executable
