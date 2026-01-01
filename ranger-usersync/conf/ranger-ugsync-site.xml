@@ -42,7 +42,7 @@
   <!-- LDAP Connection -->
   <property>
     <name>ranger.usersync.ldap.url</name>
-    <value>ldap://ldap-server:389</value>
+    <value>ldaps://ldap-server:636</value>
   </property>
 
   <property>
