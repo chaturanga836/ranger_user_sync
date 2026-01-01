@@ -68,6 +68,22 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python
 RUN chown -R ranger:ranger ${RANGER_USER_HOME} $HADOOP_HOME
 
 # ---------------------------------------------------
+# Copy and import SSL certificate ldap-ca.crt
+COPY certs/ca.crt ${RANGER_USER_HOME}/conf/cert/ca.crt
+
+RUN keytool -importcert \
+    -alias ldap-ca \
+    -file ${RANGER_USER_HOME}/conf/cert/ca.crt \
+    -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
+    -storepass changeit \
+    -noprompt
+
+RUN chown -R ranger:ranger \
+    /opt/ranger-usersync \
+    /var/run/ranger \
+    /opt/hadoop
+
+# ---------------------------------------------------
 # Copy and set entrypoint
 # ---------------------------------------------------
 COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
