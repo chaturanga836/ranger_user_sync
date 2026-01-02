@@ -54,9 +54,23 @@ RUN mkdir -p ${RANGER_RUN_DIR} ${RANGER_USER_HOME}/logs ${RANGER_USER_HOME}/conf
 # SSL Setup
 # ---------------------------------------------------
 COPY certs/ca.crt ${RANGER_USER_HOME}/conf/cert/ca.crt
-RUN keytool -importcert -alias ldap-ca -file ${RANGER_USER_HOME}/conf/cert/ca.crt \
-    -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks -storepass changeit -noprompt
+RUN keytool -importcert \
+    -alias ldap-ca \
+    -file ${RANGER_USER_HOME}/conf/cert/ca.crt \
+    -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
+    -storepass changeit \
+    -noprompt
 
+    # Usersync JCEKS (PKCS12) for policy manager password
+RUN keytool -genseckey \
+    -alias ranger.usersync.policymgr.password \
+    -keyalg AES \
+    -keysize 256 \
+    -storetype PKCS12 \
+    -keystore ${RANGER_USER_HOME}/conf/rangerusersync.jceks \
+    -storepass changeit \
+    -keypass changeit
+    
 RUN chown -R ranger:ranger /opt/ranger-usersync /var/run/ranger /opt/hadoop
 
 # ---------------------------------------------------
