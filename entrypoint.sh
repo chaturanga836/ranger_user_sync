@@ -6,7 +6,18 @@ export JAVA_HOME=/opt/java/openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Ensure we use the Master Password from Docker Compose
-export HADOOP_CREDSTORE_PASSWORD=${HADOOP_CREDSTORE_PASSWORD:-changeit}
+if [ -z "${HADOOP_CREDSTORE_PASSWORD}" ]; then
+	if [ -f ranger-usersync/install.properties ]; then
+		val=$(grep -E '^HADOOP_CREDSTORE_PASSWORD=' ranger-usersync/install.properties | cut -d'=' -f2-)
+		if [ -n "$val" ]; then
+			export HADOOP_CREDSTORE_PASSWORD="$val"
+		else
+			export HADOOP_CREDSTORE_PASSWORD=changeit
+		fi
+	else
+		export HADOOP_CREDSTORE_PASSWORD=changeit
+	fi
+fi
 
 cd /opt/ranger-usersync
 
@@ -35,4 +46,4 @@ rm -f run/usersync.pid || true
 
 # 6. Monitor Logs
 # Keep the container running by tailing the logs
-exec tail -F logs/usersync.log logs/auth.log
+exec tail -F logs/usersync-*.log
