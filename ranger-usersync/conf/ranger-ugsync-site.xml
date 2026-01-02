@@ -38,6 +38,15 @@
     <value>org.apache.ranger.unixusersync.process.PolicyMgrUserGroupBuilder</value>
   </property>
 
+  <property>
+    <name>ranger.usersync.truststore.password</name>
+    <value>changeit</value>
+  </property>
+
+  <property>
+    <name>ranger.usersync.truststore.file</name>
+    <value>/opt/ranger-usersync/conf/cert/truststore.jks</value>
+  </property>
   <!-- end need these config for ldap sync -->
   <!-- LDAP Connection -->
   <property>
@@ -71,20 +80,20 @@
     <value>ou=Groups,dc=example,dc=com</value>
   </property>
 
-	<property>
-		<name>ranger.usersync.ldap.user.groupnameattribute</name>
-		<value></value>
-	</property>
+  <property>
+    <name>ranger.usersync.ldap.user.groupnameattribute</name>
+    <value></value>
+  </property>
 
-	<property>
-		<name>ranger.usersync.enabled</name>
-		<value>true</value>
-	</property>
+  <property>
+    <name>ranger.usersync.enabled</name>
+    <value>true</value>
+  </property>
 
-  	<property>
-		<name>ranger.usersync.group.searchenabled</name>
-		<value>true</value>
-	</property>
+  <property>
+    <name>ranger.usersync.group.searchenabled</name>
+    <value>true</value>
+  </property>
   <!-- Group configuration -->
   <property>
     <name>ranger.usersync.group.objectclass</name>
@@ -199,13 +208,13 @@
     <value>false</value>
   </property>
 
-	<property>
-		<name>ranger.usersync.ldap.username.caseconversion</name>
-		<value>lower</value>
-	</property>
+  <property>
+    <name>ranger.usersync.ldap.username.caseconversion</name>
+    <value>lower</value>
+  </property>
 
-  	<property>
-		<name>ranger.usersync.ldap.groupname.caseconversion</name>
-		<value>lower</value>
-	</property>
+  <property>
+    <name>ranger.usersync.ldap.groupname.caseconversion</name>
+    <value>lower</value>
+  </property>
 </configuration>
