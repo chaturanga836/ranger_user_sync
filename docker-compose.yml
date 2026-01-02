@@ -8,7 +8,7 @@ services:
       - apache-solr_default
       - ldap_service_ldap_network
     environment:
-      - HADOOP_CREDSTORE_PASSWORD=StrongMasterPassword123
+      - HADOOP_CREDSTORE_PASSWORD=changeit
     # volumes:
     #   - ./ranger-usersync/conf:/opt/ranger-usersync/conf
     #   - ./ranger-usersync/install.properties:/opt/ranger-usersync/install.properties
