@@ -63,7 +63,7 @@ RUN keytool -importcert \
 
     # Usersync credential keystore (PKCS12) for policy manager password
 RUN keytool -genseckey \
-    -alias ranger.usersync.policymgr.password \
+    -alias rangerUsersync_password  \
     -keyalg AES \
     -keysize 256 \
     -storetype JCEKS \
