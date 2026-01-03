@@ -47,6 +47,22 @@
     <name>ranger.usersync.truststore.file</name>
     <value>/opt/ranger-usersync/conf/cert/truststore.jks</value>
   </property>
+
+  <property>
+    <name>ranger.usersync.ldap.ssl.truststore</name>
+    <value>/opt/ranger-usersync/conf/cert/truststore.jks</value>
+</property>
+
+<property>
+    <name>ranger.usersync.ldap.ssl.truststore.password</name>
+    <value>changeit</value>
+</property>
+
+<property>
+    <name>ranger.usersync.ldap.ssl.truststore.type</name>
+    <value>JKS</value>
+</property>
+
   <!-- end need these config for ldap sync -->
   <!-- LDAP Connection -->
   <property>
@@ -140,6 +156,10 @@
     <value>rangerUsersync_password</value>
   </property>
 
+	<property>
+      <name>ranger.usersync.keystore.password</name>
+      <value></value>
+    </property>
   <!-- Usersync directories -->
   <property>
     <name>ranger.usersync.base.dir</name>
@@ -155,6 +175,11 @@
     <name>ranger.usersync.pid.dir</name>
     <value>/opt/ranger-usersync/run</value>
   </property>
+
+	<!-- <property>
+		<name>ranger.usersync.keystore.file</name>
+		<value></value>
+	</property> -->
 
   <!-- Usersync behavior -->
   <property>
