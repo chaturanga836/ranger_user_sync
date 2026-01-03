@@ -35,4 +35,7 @@ chmod 640 conf/rangerusersync.jceks
 # 4. Start Usersync
 # ---------------------------------------------------
 rm -f run/usersync.pid || true
-exec ./ranger-usersync-services.sh start
+./ranger-usersync-services.sh start
+
+echo "[INFO] Ranger Usersync started. Tailing logs..."
+exec tail -F logs/usersync.log
