@@ -38,4 +38,4 @@ rm -f run/usersync.pid || true
 ./ranger-usersync-services.sh start
 
 echo "[INFO] Ranger Usersync started. Tailing logs..."
-exec tail -F logs/usersync.log
+exec tail -F logs/usersync-*.log
