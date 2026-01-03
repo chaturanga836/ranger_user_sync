@@ -18,7 +18,7 @@ ENV CLASSPATH=$RANGER_USER_HOME/lib/*:$RANGER_USER_HOME/conf:$HADOOP_HOME/share/
 # ---------------------------------------------------
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        python3 xmlstarlet curl bash procps net-tools iputils-ping wget && \
+        python3 xmlstarlet curl bash procps net-tools iputils-ping wget ldap-utils openssl && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ---------------------------------------------------
