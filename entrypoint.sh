@@ -1,49 +1,38 @@
 #!/bin/bash
 set -e
 
-# 1. Environment Setup
+# ---------------------------------------------------
+# 1. Environment
+# ---------------------------------------------------
 export JAVA_HOME=/opt/java/openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
-# Ensure we use the Master Password from Docker Compose
-if [ -z "${HADOOP_CREDSTORE_PASSWORD}" ]; then
-	if [ -f ranger-usersync/install.properties ]; then
-		val=$(grep -E '^HADOOP_CREDSTORE_PASSWORD=' ranger-usersync/install.properties | cut -d'=' -f2-)
-		if [ -n "$val" ]; then
-			export HADOOP_CREDSTORE_PASSWORD="$val"
-		else
-			export HADOOP_CREDSTORE_PASSWORD=changeit
-		fi
-	else
-		export HADOOP_CREDSTORE_PASSWORD=changeit
-	fi
-fi
+# Hadoop credential password (must match build-time)
+export HADOOP_CREDSTORE_PASSWORD=${HADOOP_CREDSTORE_PASSWORD:-changeit}
 
 cd /opt/ranger-usersync
 
-# 2. Cleanup old/broken files
-# We remove the old JCEKS and the hidden Hadoop checksum file 
-# to prevent the "Checksum error" and "Tampered with" logs.
-echo "[I] Cleaning old credential stores and checksums..."
-rm -f conf/rangerusersync.jceks
-rm -f conf/.rangerusersync.jceks.crc
+# ---------------------------------------------------
+# 2. Safety checks (NO regeneration)
+# ---------------------------------------------------
+if [ ! -f conf/rangerusersync.jceks ]; then
+  echo "[FATAL] rangerusersync.jceks not found!"
+  exit 1
+fi
 
-# 3. Generate New Credentials
-# We run setup.sh fresh so it uses the current HADOOP_CREDSTORE_PASSWORD
-echo "[I] Running setup.sh to generate new JCEKS..."
-./setup.sh
+if [ ! -f conf/cert/truststore.jks ]; then
+  echo "[FATAL] truststore.jks not found!"
+  exit 1
+fi
 
-# 4. Final Permissions
-# Using absolute paths to avoid variable resolution issues
-echo "[I] Setting permissions..."
+# ---------------------------------------------------
+# 3. Permissions
+# ---------------------------------------------------
 chown -R ranger:ranger /opt/ranger-usersync
-chmod 640 /opt/ranger-usersync/conf/rangerusersync.jceks
+chmod 640 conf/rangerusersync.jceks
 
-# 5. Start Service
-echo "[I] Starting Ranger Usersync..."
+# ---------------------------------------------------
+# 4. Start Usersync
+# ---------------------------------------------------
 rm -f run/usersync.pid || true
-./ranger-usersync-services.sh start
-
-# 6. Monitor Logs
-# Keep the container running by tailing the logs
-exec tail -F logs/usersync-*.log
+exec ./ranger-usersync-services.sh start

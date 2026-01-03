@@ -61,7 +61,7 @@ RUN keytool -importcert \
     -storepass changeit \
     -noprompt
 
-    # Usersync JCEKS (PKCS12) for policy manager password
+    # Usersync credential keystore (PKCS12) for policy manager password
 RUN keytool -genseckey \
     -alias ranger.usersync.policymgr.password \
     -keyalg AES \
@@ -79,6 +79,7 @@ RUN chown -R ranger:ranger /opt/ranger-usersync /var/run/ranger /opt/hadoop
 COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
 RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
 
-USER root
+# USER root
+USER ranger
 WORKDIR ${RANGER_USER_HOME}
 ENTRYPOINT ["./entrypoint.sh"]
