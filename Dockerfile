@@ -54,6 +54,7 @@ RUN mkdir -p ${RANGER_RUN_DIR} ${RANGER_USER_HOME}/logs ${RANGER_USER_HOME}/conf
 # SSL Setup
 # ---------------------------------------------------
 COPY certs/ca.crt ${RANGER_USER_HOME}/conf/cert/ca.crt
+
 RUN keytool -importcert \
     -alias ldap-ca \
     -file ${RANGER_USER_HOME}/conf/cert/ca.crt \
@@ -64,7 +65,7 @@ RUN keytool -importcert \
 RUN keytool -importcert \
     -alias ldap-ca \
     -file ${RANGER_USER_HOME}/conf/cert/ca.crt \
-    -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
+    -keystore ${RANGER_USER_HOME}/conf/cert/unixauthservice.jks \
     -storepass changeit \
     -noprompt
 
