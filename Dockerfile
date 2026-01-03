@@ -79,7 +79,7 @@ RUN chown -R ranger:ranger /opt/ranger-usersync /var/run/ranger /opt/hadoop
 COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
 RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
 
-# USER root
-USER ranger
+USER root
+# USER ranger
 WORKDIR ${RANGER_USER_HOME}
 ENTRYPOINT ["./entrypoint.sh"]
