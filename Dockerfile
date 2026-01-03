@@ -66,7 +66,7 @@ RUN keytool -genseckey \
     -alias ranger.usersync.policymgr.password \
     -keyalg AES \
     -keysize 256 \
-    -storetype PKCS12 \
+    -storetype JCEKS \
     -keystore ${RANGER_USER_HOME}/conf/rangerusersync.jceks \
     -storepass changeit \
     -keypass changeit
