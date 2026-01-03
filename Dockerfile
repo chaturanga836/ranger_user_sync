@@ -61,6 +61,13 @@ RUN keytool -importcert \
     -storepass changeit \
     -noprompt
 
+RUN keytool -importcert \
+    -alias ldap-ca \
+    -file ${RANGER_USER_HOME}/conf/cert/ca.crt \
+    -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
+    -storepass changeit \
+    -noprompt
+
     # Usersync credential keystore (PKCS12) for policy manager password
 RUN keytool -genseckey \
     -alias rangerUsersync_password  \
