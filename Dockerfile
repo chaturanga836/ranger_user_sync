@@ -35,6 +35,12 @@ RUN mkdir -p $HADOOP_HOME && \
     | tar -xz -C /opt && \
     mv /opt/hadoop-${HADOOP_VERSION} $HADOOP_HOME
 
+    COPY certs/ldap-ca.crt /tmp/ldap-ca.crt
+
+RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
+    -file /tmp/ldap-ca.crt \
+    -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
+    -storepass changeit -noprompt
 # ---------------------------------------------------
 # Create ranger user
 # ---------------------------------------------------
@@ -46,16 +52,28 @@ RUN useradd -ms /bin/bash ranger
 COPY ranger-usersync/ ${RANGER_USER_HOME}/
 
 # ---------------------------------------------------
-# Required directories
+# Required directories & Certificate Setup
 # ---------------------------------------------------
+# We create the folder FIRST, then run keytool
 RUN mkdir -p ${RANGER_RUN_DIR} \
              ${RANGER_USER_HOME}/logs \
              ${RANGER_USER_HOME}/conf/cert
 
+# Copy the CA cert from your host folder to the image
+COPY certs/ldap-ca.crt /tmp/ldap-ca.crt
+
+# Generate the JKS Truststore inside the newly created folder
+RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
+    -file /tmp/ldap-ca.crt \
+    -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
+    -storepass changeit -noprompt
+
 # ---------------------------------------------------
-# Make all scripts executable
+# Permissions and Compatibility
 # ---------------------------------------------------
-RUN find ${RANGER_USER_HOME} -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \;
+RUN find ${RANGER_USER_HOME} -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \; && \
+    ln -sf /usr/bin/python3 /usr/bin/python && \
+    chown -R ranger:ranger ${RANGER_USER_HOME} ${HADOOP_HOME}
 
 # ---------------------------------------------------
 # Python compatibility

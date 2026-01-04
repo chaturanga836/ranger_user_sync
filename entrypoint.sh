@@ -1,41 +1,20 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
-# ---------------------------------------------------
-# 1. Environment
-# ---------------------------------------------------
 export JAVA_HOME=/opt/java/openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
-# Hadoop credential password (must match build-time)
-export HADOOP_CREDSTORE_PASSWORD=${HADOOP_CREDSTORE_PASSWORD:-changeit}
-
 cd /opt/ranger-usersync
 
-# ---------------------------------------------------
-# 2. Safety checks (NO regeneration)
-# ---------------------------------------------------
+# Run setup ONCE
 if [ ! -f conf/rangerusersync.jceks ]; then
-  echo "[FATAL] rangerusersync.jceks not found!"
-  exit 1
+  echo "[I] JCEKS file not found, running setup.sh"
+  ./setup.sh
 fi
 
-if [ ! -f conf/cert/truststore.jks ]; then
-  echo "[FATAL] truststore.jks not found!"
-  exit 1
-fi
+echo "[I] Starting Ranger Usersync..."
 
-# ---------------------------------------------------
-# 3. Permissions
-# ---------------------------------------------------
-chown -R ranger:ranger /opt/ranger-usersync
-chmod 640 conf/rangerusersync.jceks
-
-# ---------------------------------------------------
-# 4. Start Usersync
-# ---------------------------------------------------
 rm -f run/usersync.pid || true
 ./ranger-usersync-services.sh start
 
-echo "[INFO] Ranger Usersync started. Tailing logs..."
 exec tail -F logs/*.log
