@@ -24,7 +24,7 @@ RUN apt-get update && \
         procps \
         net-tools \
         iputils-ping \
-        wget && \
+        wget ldap-utils openssl && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ---------------------------------------------------
