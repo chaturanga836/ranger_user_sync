@@ -158,7 +158,7 @@
 
 	<property>
       <name>ranger.usersync.keystore.password</name>
-      <value></value>
+      <value>changeit</value>
     </property>
   <!-- Usersync directories -->
   <property>
