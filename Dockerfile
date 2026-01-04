@@ -59,10 +59,16 @@ RUN mkdir -p ${RANGER_RUN_DIR} \
 
 COPY certs/ldap-ca.crt ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
 
-# Generate the JKS Truststore inside the newly created folder
+# FIX: Create BOTH Truststore files. 
+# The log showed unixauthservice.jks failed because of a password mismatch.
+# We generate them here with 'changeit' to match your XML.
 RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
     -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
     -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
+    -storepass changeit -noprompt && \
+    $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
+    -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
+    -keystore ${RANGER_USER_HOME}/conf/cert/unixauthservice.jks \
     -storepass changeit -noprompt
 
 # ---------------------------------------------------
