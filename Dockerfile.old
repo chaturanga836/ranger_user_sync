@@ -1,61 +1,93 @@
 FROM eclipse-temurin:8-jdk
 
+# ---------------------------------------------------
+# Environment
+# ---------------------------------------------------
 ENV RANGER_USER_HOME=/opt/ranger-usersync
 ENV RANGER_RUN_DIR=/opt/ranger-usersync/run
+ENV JAVA_HOME=/opt/java/openjdk
+ENV PATH=$JAVA_HOME/bin:$PATH
+ENV HADOOP_VERSION=3.3.6
+ENV HADOOP_HOME=/opt/hadoop/hadoop-3.3.6
+ENV PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
+# Critical: Added Ranger libs to classpath for credential tool
+ENV CLASSPATH=$RANGER_USER_HOME/lib/*:$RANGER_USER_HOME/conf:$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/common/lib/*
 
-# ---- ADD THESE ----
-# Minimal Hadoop env to silence warnings
-ENV HADOOP_HOME=/opt/hadoop
-ENV HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-
-# Prevent "default provider password" warning
-ENV HADOOP_CREDSTORE_PASSWORD=ranger123
-# -------------------
-
-# Install required packages
+# ---------------------------------------------------
+# OS packages
+# ---------------------------------------------------
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        python3 xmlstarlet curl bash procps \
-        net-tools iputils-ping && \
+        python3 xmlstarlet curl bash procps net-tools iputils-ping wget ldap-utils openssl && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# ---------------------------------------------------
+# Install Hadoop libraries
+# ---------------------------------------------------
+RUN mkdir -p $HADOOP_HOME && \
+    wget -qO- https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz \
+    | tar -xz -C /opt && \
+    mv /opt/hadoop-${HADOOP_VERSION} $HADOOP_HOME
+
+# ---------------------------------------------------
 # Create ranger user
+# ---------------------------------------------------
 RUN useradd -ms /bin/bash ranger
 
-# ---- ADD THIS ----
-# Create minimal Hadoop structure (Usersync does NOT need real Hadoop)
-RUN mkdir -p ${HADOOP_HOME}/bin ${HADOOP_CONF_DIR} && \
-    touch ${HADOOP_HOME}/bin/hadoop && \
-    chmod +x ${HADOOP_HOME}/bin/hadoop
-# -----------------
-
-# Copy Usersync distribution
+# ---------------------------------------------------
+# Copy and Clean Ranger Files
+# ---------------------------------------------------
 COPY ranger-usersync/ ${RANGER_USER_HOME}/
 
-# Create runtime directories
-RUN mkdir -p \
-      ${RANGER_USER_HOME}/logs \
-      ${RANGER_RUN_DIR} \
-      ${RANGER_USER_HOME}/conf/cert \
-      /var/run/ranger
+# IMPORTANT: Remove any pre-existing JCEKS or Checksum files from the build context
+RUN rm -f ${RANGER_USER_HOME}/conf/rangerusersync.jceks \
+    ${RANGER_USER_HOME}/conf/.rangerusersync.jceks.crc
 
-WORKDIR ${RANGER_USER_HOME}
+# ---------------------------------------------------
+# Required directories & Permissions
+# ---------------------------------------------------
+RUN mkdir -p ${RANGER_RUN_DIR} ${RANGER_USER_HOME}/logs ${RANGER_USER_HOME}/conf/cert /var/run/ranger && \
+    find ${RANGER_USER_HOME} -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \; && \
+    ln -sf /usr/bin/python3 /usr/bin/python
 
-# Make scripts executable
-RUN find . -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \;
+# ---------------------------------------------------
+# SSL Setup
+# ---------------------------------------------------
+COPY certs/ca.crt ${RANGER_USER_HOME}/conf/cert/ca.crt
 
-# Python compatibility
-RUN ln -sf /usr/bin/python3 /usr/bin/python
+RUN keytool -importcert \
+    -alias ldap-ca \
+    -file ${RANGER_USER_HOME}/conf/cert/ca.crt \
+    -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
+    -storepass changeit \
+    -noprompt
 
-# Fix ownership (no setup at build time)
-RUN chown -R ranger:ranger \
-      /opt/ranger-usersync \
-      /var/run/ranger \
-      /opt/hadoop
+RUN keytool -importcert \
+    -alias ldap-ca \
+    -file ${RANGER_USER_HOME}/conf/cert/ca.crt \
+    -keystore ${RANGER_USER_HOME}/conf/cert/unixauthservice.jks \
+    -storepass changeit \
+    -noprompt
 
-# Entrypoint
+    # Usersync credential keystore (PKCS12) for policy manager password
+RUN keytool -genseckey \
+    -alias rangerUsersync_password  \
+    -keyalg AES \
+    -keysize 256 \
+    -storetype JCEKS \
+    -keystore ${RANGER_USER_HOME}/conf/rangerusersync.jceks \
+    -storepass changeit \
+    -keypass changeit
+    
+RUN chown -R ranger:ranger /opt/ranger-usersync /var/run/ranger /opt/hadoop
+
+# ---------------------------------------------------
+# Entrypoint Setup
+# ---------------------------------------------------
 COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
 RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
 
-# Keep as root, entrypoint will handle USER switch
+USER root
+# USER ranger
+WORKDIR ${RANGER_USER_HOME}
 ENTRYPOINT ["./entrypoint.sh"]
