@@ -35,12 +35,8 @@ RUN mkdir -p $HADOOP_HOME && \
     | tar -xz -C /opt && \
     mv /opt/hadoop-${HADOOP_VERSION} $HADOOP_HOME
 
-    COPY certs/ldap-ca.crt /tmp/ldap-ca.crt
 
-RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
-    -file /tmp/ldap-ca.crt \
-    -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
-    -storepass changeit -noprompt
+
 # ---------------------------------------------------
 # Create ranger user
 # ---------------------------------------------------
@@ -60,11 +56,12 @@ RUN mkdir -p ${RANGER_RUN_DIR} \
              ${RANGER_USER_HOME}/conf/cert
 
 # Copy the CA cert from your host folder to the image
-COPY certs/ldap-ca.crt /tmp/ldap-ca.crt
+
+COPY certs/ldap-ca.crt ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
 
 # Generate the JKS Truststore inside the newly created folder
 RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
-    -file /tmp/ldap-ca.crt \
+    -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
     -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
     -storepass changeit -noprompt
 
