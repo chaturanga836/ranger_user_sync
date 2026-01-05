@@ -136,30 +136,30 @@
   </property>
 
   <!-- Credential keystore -->
-  <!-- <property>
+  <property>
     <name>ranger.usersync.credstore.filename</name>
     <value>/opt/ranger-usersync/conf/rangerusersync.jceks</value>
-  </property> -->
+  </property>
 
   <!-- <property>
     <name>ranger.usersync.credstore.password.alias</name>
     <value>rangerUsersync_password</value>
   </property> -->
-<!-- 
+
   <property>
     <name>ranger.usersync.policymgr.keystore</name>
     <value>/opt/ranger-usersync/conf/rangerusersync.jceks</value>
-  </property> -->
+  </property>
 
-  <!-- <property>
+  <property>
     <name>ranger.usersync.policymgr.alias</name>
     <value>rangerUsersync_password</value>
-  </property> -->
+  </property>
 
-	<!-- <property>
+	<property>
       <name>ranger.usersync.keystore.password</name>
       <value>changeit</value>
-    </property> -->
+    </property>
   <!-- Usersync directories -->
   <property>
     <name>ranger.usersync.base.dir</name>

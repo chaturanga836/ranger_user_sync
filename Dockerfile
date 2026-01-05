@@ -60,7 +60,7 @@ RUN $JAVA_HOME/bin/keytool -import -trustcacerts \
     -storepass changeit \
     -noprompt \
     -storetype JKS
-    
+
 # RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
 #     -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
 #     -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
@@ -70,7 +70,7 @@ RUN $JAVA_HOME/bin/keytool -import -trustcacerts \
 #     -keystore ${RANGER_USER_HOME}/conf/cert/unixauthservice.jks \
 #     -storepass changeit -noprompt -storetype JKS
 
-    # RUN rm /tmp/ldap-ca.crt
+    RUN rm /tmp/ldap-ca.crt
 # ---------------------------------------------------
 # Permissions and Compatibility
 # ---------------------------------------------------
