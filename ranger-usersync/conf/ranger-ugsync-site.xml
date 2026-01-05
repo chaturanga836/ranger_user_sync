@@ -67,7 +67,7 @@
   <!-- LDAP Connection -->
   <property>
     <name>ranger.usersync.ldap.url</name>
-    <value>ldaps://ldap-server:636</value>
+    <value>ldaps://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:636</value>
   </property>
 
   <property>
