@@ -62,6 +62,7 @@ RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
     -keystore ${RANGER_USER_HOME}/conf/cert/unixauthservice.jks \
     -storepass changeit -noprompt -storetype JKS
 
+    RUN rm /tmp/ldap-ca.crt
 # ---------------------------------------------------
 # Permissions and Compatibility
 # ---------------------------------------------------
