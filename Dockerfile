@@ -57,7 +57,7 @@ RUN mkdir -p ${RANGER_RUN_DIR} \
 
 # Copy the CA cert from your host folder to the image
 
-COPY certs/ldap-ca.crt ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
+COPY certs/ldap.crt ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
 
 # FIX: Create BOTH Truststore files. 
 # The log showed unixauthservice.jks failed because of a password mismatch.

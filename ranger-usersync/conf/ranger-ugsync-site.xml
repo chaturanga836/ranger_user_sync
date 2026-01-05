@@ -25,7 +25,7 @@
 
   <property>
     <name>ranger.usersync.port</name>
-    <value>6080</value>
+    <value>5151</value>
   </property>
 
   <property>
