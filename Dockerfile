@@ -80,8 +80,9 @@ RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
 # ---------------------------------------------------
 RUN find ${RANGER_USER_HOME} -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \; && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
-    # Add explicit permission for the linked cacerts file
-    chown -R ranger:ranger ${RANGER_USER_HOME} ${HADOOP_HOME} /etc/ssl/certs/java/cacerts
+    # Dynamically find the cacerts path for chown
+    CACERT_PATH=$(find $JAVA_HOME -name cacerts) && \
+    chown -R ranger:ranger ${RANGER_USER_HOME} ${HADOOP_HOME} $CACERT_PATH
 
 # ---------------------------------------------------
 # Python compatibility
