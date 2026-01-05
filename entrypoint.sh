@@ -5,33 +5,44 @@ export JAVA_HOME=/opt/java/openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 cd /opt/ranger-usersync
 
-# 1. Run setup if needed
+# 1. Let setup.sh run first
 if [ ! -f conf/ranger-ugsync-site.jceks ]; then
-  echo "[I] JCEKS file not found, running setup.sh"
-  # Note: Ensure install.properties is correctly configured or 
-  # setup.sh might fail in non-interactive mode.
-  ./setup.sh
+    echo "[I] Initializing Ranger with setup.sh..."
+    ./setup.sh
 fi
 
-# 2. FORCE correct LDAP settings in XML (Prevent setup.sh overrides)
-echo "[I] Patching configuration for LDAPS..."
-CONF_FILE="conf/ranger-ugsync-site.xml"
+# 2. FIND AND REPLACE ALL JKS FILES
+# This handles the root conf AND the nested usersync/conf
+echo "[I] Replacing all discovered JKS files with Golden Certificate..."
+ALL_JKS=$(find /opt/ranger-usersync -name "*.jks")
 
-# Set the Sync Source to LDAP
-xmlstarlet ed -L -u "//property[name='ranger.usersync.sync.source']/value" -v "ldap" $CONF_FILE
+for jks in $ALL_JKS; do
+    echo "Updating: $jks"
+    rm -f "$jks"
+    keytool -import -trustcacerts -alias ldap-ca \
+        -file /opt/ranger-usersync/conf/cert/ldap-ca.crt \
+        -keystore "$jks" \
+        -storepass changeit -noprompt -storetype JKS
+done
 
-# Set the correct AWS Hostname
-xmlstarlet ed -L -u "//property[name='ranger.usersync.ldap.url']/value" -v "ldaps://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:636" $CONF_FILE
+# 3. Update the Global Java Cacerts (Final Safety Net)
+echo "[I] Updating global Java truststore..."
+keytool -import -trustcacerts -alias ldap-aws \
+    -file /opt/ranger-usersync/conf/cert/ldap-ca.crt \
+    -keystore $JAVA_HOME/lib/security/cacerts \
+    -storepass changeit -noprompt
 
-# Ensure the Truststore path is correct
-xmlstarlet ed -L -u "//property[name='ranger.usersync.truststore.file']/value" -v "/opt/ranger-usersync/conf/cert/truststore.jks" $CONF_FILE
+# 4. Patch XML with xmlstarlet
+echo "[I] Patching XML configurations..."
+CONF="conf/ranger-ugsync-site.xml"
+xmlstarlet ed -L -u "//property[name='ranger.usersync.sync.source']/value" -v "ldap" $CONF
+xmlstarlet ed -L -u "//property[name='ranger.usersync.ldap.url']/value" -v "ldaps://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:636" $CONF
 
-# 3. Final cleanup and start
-echo "[I] Starting Ranger Usersync..."
+# 5. Permissions and Start
+chown -R ranger:ranger /opt/ranger-usersync
 rm -f run/usersync.pid || true
 
-# Start service in background
+echo "[I] Starting Ranger Usersync..."
 ./ranger-usersync-services.sh start
 
-# Keep container alive by tailing logs
 exec tail -F logs/usersync-*.log
