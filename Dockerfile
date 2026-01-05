@@ -65,11 +65,11 @@ COPY certs/ldap.crt ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
 RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
     -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
     -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
-    -storepass changeit -noprompt && \
+    -storepass changeit -noprompt -storetype JKS && \
     $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
     -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
     -keystore ${RANGER_USER_HOME}/conf/cert/unixauthservice.jks \
-    -storepass changeit -noprompt
+    -storepass changeit -noprompt -storetype JKS
 
 # ---------------------------------------------------
 # Permissions and Compatibility
