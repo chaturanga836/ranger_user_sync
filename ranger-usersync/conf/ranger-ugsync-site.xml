@@ -176,10 +176,10 @@
     <value>/opt/ranger-usersync/run</value>
   </property>
 
-	<!-- <property>
+	<property>
 		<name>ranger.usersync.keystore.file</name>
-		<value></value>
-	</property> -->
+		<value>/opt/ranger-usersync/conf/cert/unixauthservice.jks</value>
+	</property>
 
   <!-- Usersync behavior -->
   <property>
