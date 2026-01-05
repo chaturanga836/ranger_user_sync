@@ -36,7 +36,8 @@ RUN mkdir -p $HADOOP_HOME && \
     mv /opt/hadoop-${HADOOP_VERSION} $HADOOP_HOME
 
 
-
+RUN mkdir -p /opt/java/openjdk/lib/security && \
+    ln -s /etc/ssl/certs/java/cacerts /opt/java/openjdk/lib/security/cacerts
 # ---------------------------------------------------
 # Create ranger user
 # ---------------------------------------------------
@@ -53,11 +54,14 @@ COPY ranger-usersync/ ${RANGER_USER_HOME}/
 # We create the folder FIRST, then run keytool
 RUN mkdir -p ${RANGER_RUN_DIR} \
              ${RANGER_USER_HOME}/logs \
-             ${RANGER_USER_HOME}/conf/cert
+             ${RANGER_USER_HOME}/conf/cert \
+             ${RANGER_USER_HOME}/usersync/conf/cert
 
+             
 # Copy the CA cert from your host folder to the image
 
 COPY certs/tls.crt ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
+
 
 # FIX: Create BOTH Truststore files. 
 # The log showed unixauthservice.jks failed because of a password mismatch.
@@ -76,7 +80,8 @@ RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
 # ---------------------------------------------------
 RUN find ${RANGER_USER_HOME} -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \; && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
-    chown -R ranger:ranger ${RANGER_USER_HOME} ${HADOOP_HOME}
+    # Add explicit permission for the linked cacerts file
+    chown -R ranger:ranger ${RANGER_USER_HOME} ${HADOOP_HOME} /etc/ssl/certs/java/cacerts
 
 # ---------------------------------------------------
 # Python compatibility
