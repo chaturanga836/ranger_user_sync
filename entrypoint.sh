@@ -40,8 +40,14 @@ keytool -import -trustcacerts -alias ldap-ca \
 # 3. PATCH XML with xmlstarlet
 echo "[I] Patching XML configurations..."
 CONF="conf/ranger-ugsync-site.xml"
+
+# Core LDAP Settings
 xmlstarlet ed -L -u "//property[name='ranger.usersync.sync.source']/value" -v "ldap" $CONF
 xmlstarlet ed -L -u "//property[name='ranger.usersync.ldap.url']/value" -v "ldaps://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:636" $CONF
+
+# Fix for the NullPointerException: explicitly point Ranger to the system truststore
+xmlstarlet ed -L -u "//property[name='ranger.usersync.truststore.file']/value" -v "/opt/java/openjdk/lib/security/cacerts" $CONF
+xmlstarlet ed -L -u "//property[name='ranger.usersync.truststore.password']/value" -v "changeit" $CONF
 
 # 4. Cleanup and Start
 chown -R ranger:ranger /opt/ranger-usersync
