@@ -5,6 +5,17 @@ export JAVA_HOME=/opt/java/openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 cd /opt/ranger-usersync
 
+# Ensure the credential provider password is set before any Java call
+if [ -z "${HADOOP_CREDSTORE_PASSWORD}" ]; then
+    if [ -f install.properties ]; then
+        val=$(grep -E '^HADOOP_CREDSTORE_PASSWORD=' install.properties | cut -d'=' -f2- | tr -d '\r')
+        if [ -n "$val" ]; then
+            export HADOOP_CREDSTORE_PASSWORD="$val"
+            echo "[I] HADOOP_CREDSTORE_PASSWORD loaded from install.properties"
+        fi
+    fi
+fi
+
 # 1. Initialize Ranger
 if [ ! -f conf/ranger-ugsync-site.jceks ]; then
     echo "[I] Initializing Ranger with setup.sh..."
