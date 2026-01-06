@@ -43,12 +43,12 @@ update_prop() {
 
 # Force these critical values to kill the NPE
 update_prop "ranger.usersync.ldap.sslEnabled" "true"
-update_prop "ranger.usersync.truststore.file" "/opt/java/openjdk/lib/security/cacerts"
-update_prop "ranger.usersync.truststore.password" "changeit"
-update_prop "ranger.usersync.ldap.ssl.truststore" "/opt/java/openjdk/lib/security/cacerts"
-update_prop "ranger.usersync.ldap.ssl.truststore.password" "changeit"
-update_prop "ranger.usersync.ldap.ssl.truststore.type" "JKS"
-update_prop "ranger.usersync.ldap.url" "ldaps://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:636"
+update_prop "ranger.usersync.ldap.url" "$LDAP_URL"
+update_prop "ranger.usersync.truststore.file" "$TS_FILE"
+update_prop "ranger.usersync.truststore.password" "$TS_PASS"
+update_prop "ranger.usersync.ldap.ssl.truststore" "$TS_FILE"
+update_prop "ranger.usersync.ldap.ssl.truststore.password" "$TS_PASS"
+update_prop "ranger.usersync.ldap.ssl.truststore.type" "JK
 
 # 4. Cleanup and Start
 chown -R ranger:ranger /opt/ranger-usersync
