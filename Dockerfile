@@ -53,11 +53,11 @@ RUN mkdir -p ${RANGER_RUN_DIR} \
 COPY certs/tls.crt ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
 
 # Pre-populate JKS stores
-RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
-    -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
-    -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
-    -storepass changeit -noprompt -storetype JKS && \
-    rm ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
+# RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
+#     -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
+#     -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
+#     -storepass changeit -noprompt -storetype JKS && \
+#     rm ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
 
 # RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
 #     -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
