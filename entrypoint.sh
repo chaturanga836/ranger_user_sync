@@ -25,8 +25,30 @@ keytool -import -trustcacerts -alias ldap-ca \
     -storepass changeit -noprompt || echo "Already imported"
 
 # 4. Patch XML (Ensure LDAPS URL is set)
+echo "[I] Patching XML configurations..."
 CONF="conf/ranger-ugsync-site.xml"
-xmlstarlet ed -L -u "//property[name='ranger.usersync.ldap.url']/value" -v "ldaps://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:636" $CONF
+
+# Function to safely update or add properties
+update_prop() {
+    local name=$1
+    local value=$2
+    if xmlstarlet sel -t -v "//property[name='$name']" "$CONF" > /dev/null 2>&1; then
+        xmlstarlet ed -L -u "//property[name='$name']/value" -v "$value" "$CONF"
+    else
+        xmlstarlet ed -L -s "/configuration" -t elem -n "property" -v "" \
+            -s "/configuration/property[last()]" -t elem -n "name" -v "$name" \
+            -s "/configuration/property[last()]" -t elem -n "value" -v "$value" "$CONF"
+    fi
+}
+
+# Force these critical values to kill the NPE
+update_prop "ranger.usersync.ldap.sslEnabled" "true"
+update_prop "ranger.usersync.truststore.file" "/opt/java/openjdk/lib/security/cacerts"
+update_prop "ranger.usersync.truststore.password" "changeit"
+update_prop "ranger.usersync.ldap.ssl.truststore" "/opt/java/openjdk/lib/security/cacerts"
+update_prop "ranger.usersync.ldap.ssl.truststore.password" "changeit"
+update_prop "ranger.usersync.ldap.ssl.truststore.type" "JKS"
+update_prop "ranger.usersync.ldap.url" "ldaps://ec2-65-0-150-75.ap-south-1.compute.amazonaws.com:636"
 
 # 4. Cleanup and Start
 chown -R ranger:ranger /opt/ranger-usersync
@@ -35,4 +57,4 @@ rm -f run/usersync.pid || true
 echo "[I] Starting Ranger Usersync..."
 ./ranger-usersync-services.sh start
 
-exec tail -F logs/usersync-*.log
+exec tail -F logs/auth.log logs/usersync-*.log 
