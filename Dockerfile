@@ -22,8 +22,6 @@ RUN apt-get update && \
 # ---------------------------------------------------
 # Fix Java cacerts path - THE BULLET-PROOF FIX
 # ---------------------------------------------------
-# 1. Create the directory Ranger's hardcoded script expects
-# 2. Find the REAL cacerts in Temurin and COPY it there (not a link)
 RUN mkdir -p /opt/java/openjdk/lib/security && \
     REAL_CACERT=$(find $JAVA_HOME -name cacerts) && \
     cp "$REAL_CACERT" /opt/java/openjdk/lib/security/cacerts
@@ -47,33 +45,17 @@ COPY ranger-usersync/ ${RANGER_USER_HOME}/
 # ---------------------------------------------------
 RUN mkdir -p ${RANGER_RUN_DIR} \
              ${RANGER_USER_HOME}/logs \
-             ${RANGER_USER_HOME}/conf/cert \
-             ${RANGER_USER_HOME}/usersync/conf/cert
+             ${RANGER_USER_HOME}/conf/cert
 
+# ONLY Copy the cert. Do NOT build JKS here. 
+# The entrypoint/setup.sh will handle JKS creation.
 COPY certs/tls.crt ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
 
-# Pre-populate JKS stores
-# RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
-#     -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
-#     -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
-#     -storepass changeit -noprompt -storetype JKS && \
-#     rm ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
-
-# RUN $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
-#     -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
-#     -keystore ${RANGER_USER_HOME}/conf/cert/truststore.jks \
-#     -storepass changeit -noprompt -storetype JKS && \
-#     $JAVA_HOME/bin/keytool -import -trustcacerts -alias ldap-ca \
-#     -file ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt \
-#     -keystore ${RANGER_USER_HOME}/conf/cert/unixauthservice.jks \
-#     -storepass changeit -noprompt -storetype JKS
-    
 # ---------------------------------------------------
 # Permissions and Compatibility
 # ---------------------------------------------------
 RUN find ${RANGER_USER_HOME} -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} \; && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
-    # Ensure ranger user owns the source AND the new cacerts file we copied
     chown -R ranger:ranger ${RANGER_USER_HOME} ${HADOOP_HOME} /opt/java/openjdk/lib/security/cacerts
 
 # ---------------------------------------------------
