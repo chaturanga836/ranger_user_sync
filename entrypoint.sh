@@ -48,7 +48,7 @@ update_prop "ranger.usersync.truststore.file" "$TS_FILE"
 update_prop "ranger.usersync.truststore.password" "$TS_PASS"
 update_prop "ranger.usersync.ldap.ssl.truststore" "$TS_FILE"
 update_prop "ranger.usersync.ldap.ssl.truststore.password" "$TS_PASS"
-update_prop "ranger.usersync.ldap.ssl.truststore.type" "JK
+update_prop "ranger.usersync.ldap.ssl.truststore.type" "JKS"
 
 # 4. Cleanup and Start
 chown -R ranger:ranger /opt/ranger-usersync
