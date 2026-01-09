@@ -49,7 +49,7 @@ RUN mkdir -p ${RANGER_RUN_DIR} \
 
 # ONLY Copy the cert. Do NOT build JKS here. 
 # The entrypoint/setup.sh will handle JKS creation.
-COPY certs/tls.crt ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
+COPY certs/ca.crt ${RANGER_USER_HOME}/conf/cert/ldap-ca.crt
 
 # ---------------------------------------------------
 # Permissions and Compatibility
