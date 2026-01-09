@@ -6,7 +6,7 @@ services:
     container_name: ranger-usersync
     networks:
       - apache-solr_default
-      - ldap_service_ldap_network
+      - ldap_network
     # environment:
     #   - HADOOP_CREDSTORE_PASSWORD=changeit
     # volumes:
@@ -16,5 +16,5 @@ networks:
   apache-solr_default:
     external: true
 
-  ldap_service_ldap_network:
+  ldap_network:
     external: true
