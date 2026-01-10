@@ -61,9 +61,8 @@ RUN find ${RANGER_USER_HOME} -type f \( -name "*.sh" -o -name "*.py" \) -exec ch
 # ---------------------------------------------------
 # Entrypoint Setup
 # ---------------------------------------------------
-COPY entrypoint.sh ${RANGER_USER_HOME}/entrypoint.sh
-RUN chmod +x ${RANGER_USER_HOME}/entrypoint.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-USER root
-WORKDIR ${RANGER_USER_HOME}
-ENTRYPOINT ["./entrypoint.sh"]
+RUN apt-get update && apt-get install -y dos2unix bc && \
+    dos2unix /usr/local/bin/entrypoint.sh && \
+    chmod +x /usr/local/bin/entrypoint.sh

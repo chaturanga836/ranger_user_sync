@@ -4,6 +4,11 @@ services:
   ranger-usersync:
     build: .
     container_name: ranger-usersync
+    environment:
+      - LDAP_URL=ldaps://144.24.127.112:636
+      - TS_FILE=/opt/java/openjdk/lib/security/cacerts
+      - TS_PASS=changeit
+    entrypoint: ["/bin/bash", "/usr/local/bin/entrypoint.sh"]
     networks:
       - apache-solr_default
       - ldap_network
