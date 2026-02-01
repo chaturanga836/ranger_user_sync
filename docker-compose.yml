@@ -9,6 +9,8 @@ services:
       - TS_FILE=/opt/java/openjdk/lib/security/cacerts
       - TS_PASS=changeit
     entrypoint: ["/bin/bash", "/usr/local/bin/entrypoint.sh"]
+    extra_hosts:
+      - "144.24.127.112:host-gateway"
     networks:
       - apache-solr_default
       - ldap_network
