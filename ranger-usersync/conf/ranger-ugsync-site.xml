@@ -113,16 +113,16 @@
   <!-- Group configuration -->
   <property>
     <name>ranger.usersync.group.objectclass</name>
-    <value>groupOfNames</value>
+    <value>*</value>
   </property>
 
   <property>
     <name>ranger.usersync.group.searchfilter</name>
-    <value>(objectClass=groupOfNames)</value>
+    <value>(|(objectClass=posixGroup)(objectClass=groupOfNames))</value>
   </property>
   <property>
     <name>ranger.usersync.group.memberattributename</name>
-    <value>member</value>
+    <value>member,memberUid</value>
   </property>
 
   <property>
