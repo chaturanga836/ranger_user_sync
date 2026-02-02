@@ -88,12 +88,12 @@
 
   <property>
     <name>ranger.usersync.ldap.user.searchbase</name>
-    <value>dc=crypto,dc=lake</value>
+    <value>ou=users,dc=crypto,dc=lake</value>
   </property>
 
   <property>
     <name>ranger.usersync.group.searchbase</name>
-    <value>ou=Groups,dc=crypto,dc=lake</value>
+    <value>ou=groups,dc=crypto,dc=lake</value>
   </property>
 
   <property>
